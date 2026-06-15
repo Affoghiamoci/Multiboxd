@@ -150,8 +150,7 @@ export async function GET(
         }
         
         // Paginate the shuffled list
-        const start = (page - 1) * PAGE_SIZE;
-        films = allFilms.slice(start, start + PAGE_SIZE);
+        films = allFilms.slice(skip, skip + 100);
       } else {
         // Normal behavior: fetch just the requested page
         films = await getPublicList(slug, page);
