@@ -131,9 +131,9 @@ export async function findByImdb(
   imdbId: string,
   apiKey: string,
   language: string
-): Promise<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string } | null> {
-  const cacheKey = `find:${imdbId}`;
-  const cached = cache.get<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string }>(cacheKey);
+): Promise<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string } | null> {
+  const cacheKey = `find:${imdbId}:${language}`;
+  const cached = cache.get<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string }>(cacheKey);
   if (cached) return cached;
 
   const url = `${TMDB_BASE}/find/${imdbId}?api_key=${apiKey}&language=${language}&external_source=imdb_id`;
@@ -142,11 +142,21 @@ export async function findByImdb(
     if (!res.ok) return null;
     const data = await res.json();
 
-    let result: { tmdbId: number; type: 'movie' | 'series'; posterPath?: string } | null = null;
+    let result: { tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string } | null = null;
     if (data.movie_results?.length > 0) {
-      result = { tmdbId: data.movie_results[0].id, type: 'movie', posterPath: data.movie_results[0].poster_path };
+      result = { 
+        tmdbId: data.movie_results[0].id, 
+        type: 'movie', 
+        posterPath: data.movie_results[0].poster_path,
+        title: data.movie_results[0].title
+      };
     } else if (data.tv_results?.length > 0) {
-      result = { tmdbId: data.tv_results[0].id, type: 'series', posterPath: data.tv_results[0].poster_path };
+      result = { 
+        tmdbId: data.tv_results[0].id, 
+        type: 'series', 
+        posterPath: data.tv_results[0].poster_path,
+        title: data.tv_results[0].name
+      };
     }
     if (result) cache.set(cacheKey, result, 86400);
     return result;

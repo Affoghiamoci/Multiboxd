@@ -171,6 +171,9 @@ export async function GET(
             const url = posterUrl(tmdbData.posterPath, 'w500');
             if (url) m.poster = url;
           }
+          if (tmdbData?.title) {
+            m.name = tmdbData.title;
+          }
         } catch {
           // Ignora errori e usa Metahub fallback
         }
