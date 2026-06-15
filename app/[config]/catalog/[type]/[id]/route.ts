@@ -11,6 +11,7 @@ import {
   getWatchlist,
   getDiary,
   getPublicList,
+  getAllPublicListFilms,
   resolveImdbIds,
   LbFilm,
 } from '@/lib/letterboxd';
@@ -111,7 +112,6 @@ export async function GET(
       );
     } else if (id.startsWith('lb-list-')) {
       const slug = id.replace('lb-list-', '').replace(/__/g, '/');
-      films = await getPublicList(slug, page);
 
       // Check if shuffle is enabled for this custom list
       const listEntry = config.catalogs.customLists.find(l => {
@@ -120,29 +120,41 @@ export async function GET(
       });
       const shouldShuffle = listEntry && typeof listEntry === 'object' && listEntry.shuffle;
 
-      if (shouldShuffle && films.length > 1) {
-        // Seeded shuffle (consistent per day) using a simple hash
-        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-        let seed = 0;
-        const seedStr = slug + today;
-        for (let i = 0; i < seedStr.length; i++) {
-          seed = ((seed << 5) - seed + seedStr.charCodeAt(i)) | 0;
-        }
-        // Simple seeded PRNG (mulberry32)
-        const mulberry32 = (s: number) => {
-          return () => {
-            s |= 0; s = s + 0x6D2B79F5 | 0;
-            let t = Math.imul(s ^ s >>> 15, 1 | s);
-            t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      if (shouldShuffle) {
+        // Fetch ALL films from all pages to shuffle the entire list, not just one page
+        const allFilms = await getAllPublicListFilms(slug);
+        
+        if (allFilms.length > 1) {
+          // Seeded shuffle (consistent per day) using a simple hash
+          const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+          let seed = 0;
+          const seedStr = slug + today;
+          for (let i = 0; i < seedStr.length; i++) {
+            seed = ((seed << 5) - seed + seedStr.charCodeAt(i)) | 0;
+          }
+          // Simple seeded PRNG (mulberry32)
+          const mulberry32 = (s: number) => {
+            return () => {
+              s |= 0; s = s + 0x6D2B79F5 | 0;
+              let t = Math.imul(s ^ s >>> 15, 1 | s);
+              t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+              return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
           };
-        };
-        const rng = mulberry32(seed);
-        // Fisher-Yates shuffle
-        for (let i = films.length - 1; i > 0; i--) {
-          const j = Math.floor(rng() * (i + 1));
-          [films[i], films[j]] = [films[j], films[i]];
+          const rng = mulberry32(seed);
+          // Fisher-Yates shuffle
+          for (let i = allFilms.length - 1; i > 0; i--) {
+            const j = Math.floor(rng() * (i + 1));
+            [allFilms[i], allFilms[j]] = [allFilms[j], allFilms[i]];
+          }
         }
+        
+        // Paginate the shuffled list
+        const start = (page - 1) * PAGE_SIZE;
+        films = allFilms.slice(start, start + PAGE_SIZE);
+      } else {
+        // Normal behavior: fetch just the requested page
+        films = await getPublicList(slug, page);
       }
     }
 

@@ -307,6 +307,57 @@ export async function getPublicList(listUrl: string, page = 1): Promise<LbFilm[]
   return films;
 }
 
+export async function getAllPublicListFilms(listUrl: string, concurrency = 3): Promise<LbFilm[]> {
+  const base = listUrl.replace(/\/?$/, '');
+  const path = base.startsWith('http')
+    ? new URL(base).pathname.replace(/\/?$/, '')
+    : `/${base.replace(/^\//, '')}`;
+  
+  const cacheKey = `lb:list-all:${path}`;
+  const cached = cache.get<LbFilm[]>(cacheKey);
+  if (cached) return cached;
+
+  // Fetch first page to get films and total pages
+  const html = await lbGet(`${path}/`);
+  if (!html) return [];
+  
+  const $ = cheerio.load(html);
+  const firstPageFilms = extractFilmsFromGrid($);
+  
+  // Find total pages
+  let totalPages = 1;
+  const paginationLinks = $('.paginate-page a');
+  if (paginationLinks.length > 0) {
+    const lastPageHref = paginationLinks.last().attr('href') || '';
+    const match = lastPageHref.match(/\/page\/(\d+)\/?$/);
+    if (match && match[1]) {
+      totalPages = parseInt(match[1], 10);
+    }
+  }
+
+  const allFilms = [...firstPageFilms];
+
+  // Fetch remaining pages in parallel with concurrency limit
+  const pagesToFetch = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
+  
+  for (let i = 0; i < pagesToFetch.length; i += concurrency) {
+    const batch = pagesToFetch.slice(i, i + concurrency);
+    const results = await Promise.all(
+      batch.map(async (p) => {
+        const pageHtml = await lbGet(`${path}/page/${p}/`);
+        if (!pageHtml) return [];
+        return extractFilmsFromGrid(cheerio.load(pageHtml));
+      })
+    );
+    for (const films of results) {
+      allFilms.push(...films);
+    }
+  }
+
+  cache.set(cacheKey, allFilms, 900); // 15 min cache
+  return allFilms;
+}
+
 export async function resolveImdbIds(films: LbFilm[], sessionToken?: string, concurrency = 5): Promise<LbFilm[]> {
   const results: LbFilm[] = [];
   console.log(`[resolveImdbIds] Resolving ${films.length} films...`);

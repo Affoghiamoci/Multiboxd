@@ -482,7 +482,8 @@ input, select { font-family: inherit; }
   align-items: center;
   justify-content: center;
   transition: all var(--t);
-  opacity: 0;
+  opacity: 0.6;
+  cursor: pointer;
 }
 .catalog-item:hover .catalog-delete { opacity: 1; }
 .catalog-delete:hover { color: var(--red); background: var(--red-bg); }
