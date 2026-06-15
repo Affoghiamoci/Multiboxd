@@ -16,13 +16,19 @@ export async function GET(
   const catalogs = [];
 
   // Letterboxd
-  const prefix = config.catalogPrefix || 'Letterboxd';
+  const prefix = config.catalogPrefix || 'Multiboxd';
   
+  const formatName = (catalogName: string) => {
+    if (config.hideAddonName) return catalogName;
+    if (config.hideHyphen) return `${prefix} ${catalogName}`;
+    return `${prefix} - ${catalogName}`;
+  };
+
   if (config.catalogs?.watchlist && config.lbUsername) {
     catalogs.push({ 
       type: 'movie', 
       id: 'lb-watchlist', 
-      name: `${prefix} - ${config.watchlistName || 'Watchlist'}`, 
+      name: formatName(config.watchlistName || 'Watchlist'), 
       extra: [{ name: 'skip', isRequired: false }] 
     });
   }
@@ -31,7 +37,7 @@ export async function GET(
     catalogs.push({ 
       type: 'movie', 
       id: 'lb-diary', 
-      name: `${prefix} - ${config.diaryName || 'Diary'}`, 
+      name: formatName(config.diaryName || 'Diary'), 
       extra: [{ name: 'skip', isRequired: false }] 
     });
   }
@@ -40,7 +46,7 @@ export async function GET(
     catalogs.push({ 
       type: 'movie', 
       id: 'lb-friends', 
-      name: `${prefix} - ${config.friendsName || 'Friends'}`, 
+      name: formatName(config.friendsName || 'Friends'), 
       extra: [{ name: 'skip', isRequired: false }] 
     });
   }
@@ -49,7 +55,7 @@ export async function GET(
     catalogs.push({ 
       type: 'movie', 
       id: 'lb-recommendations', 
-      name: `${prefix} - ${config.recommendationsName || 'Recommended for You'}`, 
+      name: formatName(config.recommendationsName || 'Recommended for You'), 
       extra: [{ name: 'skip', isRequired: false }] 
     });
   }
@@ -73,7 +79,7 @@ export async function GET(
       catalogs.push({
         type: 'movie',
         id: `lb-list-${safeSlug}`,
-        name: `${prefix} - ${customName || fallbackName}`,
+        name: formatName(customName || fallbackName),
         extra: [{ name: 'skip', isRequired: false }]
       });
     });
@@ -94,8 +100,8 @@ export async function GET(
     id: 'com.multiboxd',
     version: '0.1.0',
     name: 'Multiboxd',
-    description: `Multilingual metadata from TMDB${catalogs.length > 0 ? ' + Letterboxd catalogs' : ''}`,
-    logo: 'https://i.imgur.com/ztMoMtI.png',
+    description: 'Sync your Letterboxd Watchlist, Diary, Friends Activity and custom lists directly into Stremio — no metadata provided, works alongside your existing addons.',
+    logo: 'https://multiboxd.fly.dev/icon.png',
     resources: ['catalog'],
     types: ['movie', 'series'],
     idPrefixes: ['tt'],

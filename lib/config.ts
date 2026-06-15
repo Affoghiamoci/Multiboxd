@@ -21,6 +21,8 @@ export interface AddonConfig {
   tmdbKey?: string;
   language?: string;
   catalogPrefix?: string;
+  hideAddonName?: boolean;
+  hideHyphen?: boolean;
   watchlistName?: string;
   diaryName?: string;
   friendsName?: string;

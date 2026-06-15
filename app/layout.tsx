@@ -2,9 +2,13 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Multiboxd — Stremio Addon with Multilingual Metadata',
+  title: 'Multiboxd — Letterboxd catalogs in Stremio',
   description:
-    'Configure your Stremio addon to get Italian (or any language) metadata from TMDB, with optional Letterboxd catalog integration.',
+    'Sync your Letterboxd Watchlist, Diary, Friends Activity and custom lists directly into Stremio. No metadata provided — works alongside your existing addons.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -3,6 +3,100 @@
 import { useState, useEffect, useCallback } from 'react';
 import { encodeConfig, decodeConfig, AddonConfig } from '@/lib/config';
 
+
+const TRANSLATIONS = {
+  en: {
+    sub: 'Add Letterboxd catalogs directly to Stremio.',
+    lbProfile: 'Letterboxd Profile',
+    lbDesc: 'Enter your Letterboxd username to sync your public Watchlist, Diary and Friends Activity — no password needed.',
+    connect: 'Connect',
+    disconnect: 'Disconnect',
+    tmdbTitle: 'TMDB',
+    tmdbDesc: 'Provide a free TMDB API Key to enable localized posters (e.g. in Italian) and unlock the Recommended catalog. This key is used strictly for posters and recommendations, not for metadata.',
+    tmdbKeyLabel: 'TMDB API Key',
+    verify: 'Verify',
+    validKey: 'Valid API Key',
+    invalidKey: 'Invalid API Key',
+    getKey: 'Get your free API key here',
+    posterLang: 'Poster Language',
+    catalogsTitle: 'Your Catalogs',
+    emptyCatalogs: 'Connect your Letterboxd profile above to sync your Watchlist, Diary and Friends Activity.',
+    addCustomList: 'Add a Custom List',
+    addListPlaceholder: 'Paste Letterboxd List URL…',
+    addBtn: 'Add',
+    globalSettings: 'Global Settings',
+    prefixLabel: 'Catalog Name Prefix',
+    prefixHint1: 'Catalogs will appear as',
+    prefixHint2: '— Watchlist etc.',
+    hideAddonName: 'Hide Addon Name',
+    hideHyphen: 'Hide Hyphen',
+    installTitle: 'Addon URL — ready to install',
+    installPlaceholder: 'Configure at least one catalog to generate the URL…',
+    installStremio: 'Install in Stremio',
+    installWeb: 'Stremio Web',
+    copyLink: 'Copy Link',
+    copied: 'Copied!',
+    faqTitle: 'Frequently Asked Questions',
+    faq1q: 'What is Multiboxd?',
+    faq1a: 'Multiboxd is a Stremio add-on that allows you to integrate your Letterboxd catalogs directly into the application. You can sync your public Watchlist, Diary, Recommended films based on your taste, friends\' activity, and add custom public lists.',
+    faq2q: 'How does it differ from other similar add-ons?',
+    faq2a: 'Unlike other add-on configurations, Multiboxd does not provide its own metadata (such as descriptions, cast, trailers, etc.). Instead, it relies on the metadata already available in Stremio. This makes it lightweight and fully compatible with other metadata and playback add-ons you have installed, preventing duplicates or conflicts.',
+    faq3q: 'How does the Recommended catalog work?',
+    faq3a: 'The add-on fetches your Letterboxd Diary history (specifically the first page), filters and selects your highest-rated films (assigning weights to each rating), and queries the TMDB API for similar films. These suggestions are then aggregated and sorted to deliver a highly personalized feed.',
+    faq4q: 'Why do I need a TMDB API Key?',
+    faq4a: 'The TMDB (The Movie Database) API Key is optional but recommended. Because of how Stremio works, we do not fetch or store any metadata ourselves. The TMDB key is used strictly to retrieve localized posters (e.g. in Italian) in the catalog grid and is required to calculate recommendations (which are computed via TMDB services). It does not affect media playback or core metadata.',
+    faq5q: 'Why are descriptions or details missing in "Show All"?',
+    faq5a: 'By design, the add-on does not provide movie metadata to avoid conflicting with other add-ons. Descriptions, trailers, and other details in the catalog view are loaded automatically by Stremio from your other installed metadata add-ons (such as Cinematica or Stremio\'s default metadata).',
+    support: 'Support me on Ko-fi',
+    footer: 'Developed with ♥ for the Stremio community'
+  },
+  it: {
+    sub: 'Aggiungi i cataloghi Letterboxd direttamente su Stremio.',
+    lbProfile: 'Profilo Letterboxd',
+    lbDesc: 'Inserisci il tuo username Letterboxd per sincronizzare Watchlist, Diary e attività degli amici — nessuna password necessaria.',
+    connect: 'Connetti',
+    disconnect: 'Disconnetti',
+    tmdbTitle: 'TMDB',
+    tmdbDesc: 'Inserisci una API Key gratuita di TMDB per abilitare le locandine localizzate e sbloccare i Film Consigliati. La chiave viene usata solo per le immagini e i consigli, non per i metadati.',
+    tmdbKeyLabel: 'TMDB API Key',
+    verify: 'Verifica',
+    validKey: 'API Key Valida',
+    invalidKey: 'API Key Non Valida',
+    getKey: 'Ottieni la tua API key gratuita qui',
+    posterLang: 'Lingua Locandine',
+    catalogsTitle: 'I Tuoi Cataloghi',
+    emptyCatalogs: 'Connetti il tuo profilo Letterboxd qui sopra per sincronizzare Watchlist, Diary e le attività degli amici.',
+    addCustomList: 'Aggiungi Lista Personalizzata',
+    addListPlaceholder: 'Incolla URL Lista Letterboxd…',
+    addBtn: 'Aggiungi',
+    globalSettings: 'Impostazioni Globali',
+    prefixLabel: 'Prefisso Nome Catalogo',
+    prefixHint1: 'I cataloghi appariranno come',
+    prefixHint2: '— Watchlist ecc.',
+    hideAddonName: 'Nascondi Nome Addon',
+    hideHyphen: 'Nascondi Trattino',
+    installTitle: 'URL Addon — pronto per l\'installazione',
+    installPlaceholder: 'Configura almeno un catalogo per generare l\'URL…',
+    installStremio: 'Installa in Stremio',
+    installWeb: 'Stremio Web',
+    copyLink: 'Copia Link',
+    copied: 'Copiato!',
+    faqTitle: 'Domande Frequenti',
+    faq1q: 'Cos\'è Multiboxd?',
+    faq1a: 'Multiboxd è un add-on per Stremio che ti permette di integrare i tuoi cataloghi Letterboxd direttamente nell\'applicazione. Puoi sincronizzare le tue Watchlist, il Diary, i film Consigliati in base ai tuoi gusti, le attività degli amici e aggiungere liste pubbliche personalizzate.',
+    faq2q: 'Cosa lo differenzia da altri add-on simili?',
+    faq2a: 'A differenza di altre configurazioni, Multiboxd non fornisce metadati propri (come descrizioni, cast, trailer, ecc.). Si appoggia invece a quelli già disponibili su Stremio. Questo lo rende molto leggero e totalmente compatibile con gli altri add-on che hai già installato, evitando fastidiosi duplicati o conflitti.',
+    faq3q: 'Come funziona il catalogo dei Film Consigliati?',
+    faq3a: 'L\'add-on analizza la cronologia del tuo Diary (nello specifico la prima pagina), filtra e seleziona i film a cui hai dato il voto più alto (assegnando pesi a ciascun voto) e interroga l\'API di TMDB per trovare titoli simili. Questi suggerimenti vengono poi aggregati e ordinati per offrirti un feed personalizzato.',
+    faq4q: 'Perché mi serve una TMDB API Key?',
+    faq4a: 'La TMDB API Key è opzionale ma fortemente raccomandata. La chiave viene usata strettamente per scaricare le locandine localizzate (es. in italiano) nel grid del catalogo e per calcolare i film consigliati (che passano tramite i servizi di TMDB). Non influisce né sulla riproduzione né sui metadati principali.',
+    faq5q: 'Perché mancano le descrizioni o i dettagli in "Mostra Tutti"?',
+    faq5a: 'L\'add-on non fornisce intenzionalmente i metadati dei film. Le descrizioni, i trailer e gli altri dettagli nella vista catalogo vengono caricati in automatico da Stremio e dagli altri add-on di metadati installati (come Cinematica o i metadati di default di Stremio).',
+    support: 'Supportami su Ko-fi',
+    footer: 'Sviluppato con ♥ per la community di Stremio'
+  }
+};
+
 const DEFAULT_CONFIG: AddonConfig = {
   tmdbKey: '',
   language: 'it-IT',
@@ -62,7 +156,10 @@ function CatalogItem({
 
   return (
     <div className="catalog-item">
-      <span className="catalog-grip"><GripIcon /></span>
+      <div className="catalog-arrows" style={{ display: 'flex', flexDirection: 'column', marginRight: '10px', opacity: 0.6 }}>
+        <button type="button" onClick={onMoveUp} style={{ visibility: onMoveUp ? 'visible' : 'hidden', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '10px', padding: '2px 4px' }}>▲</button>
+        <button type="button" onClick={onMoveDown} style={{ visibility: onMoveDown ? 'visible' : 'hidden', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '10px', padding: '2px 4px' }}>▼</button>
+      </div>
 
       <div className="catalog-info">
         <div className="catalog-name-row">
@@ -88,16 +185,7 @@ function CatalogItem({
       </div>
 
       <div className="catalog-right">
-        {onMoveUp && (
-          <button type="button" className="edit-btn" style={{ opacity: 0.8, padding: '3px 6px', fontSize: '11px' }} onClick={onMoveUp} title="Move Up">
-            ▲
-          </button>
-        )}
-        {onMoveDown && (
-          <button type="button" className="edit-btn" style={{ opacity: 0.8, padding: '3px 6px', fontSize: '11px' }} onClick={onMoveDown} title="Move Down">
-            ▼
-          </button>
-        )}
+        
         {onDelete && (
           <button type="button" className="catalog-delete" onClick={onDelete}>
             <TrashIcon />
@@ -113,6 +201,8 @@ function CatalogItem({
 
 // ── Main page ──────────────────────────────────────────────────────────────────
 export default function ConfigPage() {
+  const [uiLang, setUiLang] = useState<'it'|'en'>('en');
+  const t = TRANSLATIONS[uiLang];
   const [config, setConfig] = useState<AddonConfig>(DEFAULT_CONFIG);
   const [encodedUrl, setEncodedUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -160,6 +250,10 @@ export default function ConfigPage() {
   }, []);
 
   useEffect(() => {
+    if (!config.lbUsername) {
+      setEncodedUrl('');
+      return;
+    }
     setEncodedUrl(`${baseUrl}/${encodeConfig(config)}/manifest.json`);
   }, [config, baseUrl]);
 
@@ -351,22 +445,25 @@ export default function ConfigPage() {
         {/* ── Header ── */}
         <header className="header">
           <div className="logo">
-            <div className="logo-mark">🎬</div>
+            <div className="logo-mark" style={{ background: 'transparent', boxShadow: 'none' }}><img src="/icon.png" alt="Logo" width={40} height={40} style={{ borderRadius: '10px' }} /></div>
             <span className="logo-name">Multiboxd</span>
           </div>
-          <p className="header-sub">Add Letterboxd catalogs directly to Stremio.</p>
+          <p className="header-sub">{t.sub}</p>
+          <div style={{ position: 'absolute', top: 20, right: 20, display: 'flex', gap: '8px' }}>
+            <button className={`btn btn-sm ${uiLang === 'it' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setUiLang('it')}>IT</button>
+            <button className={`btn btn-sm ${uiLang === 'en' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setUiLang('en')}>EN</button>
+          </div>
         </header>
 
         {/* ── Letterboxd Profile ── */}
         <div className="card">
           <div className="card-head">
             <div className="card-icon">👤</div>
-            <span className="card-title">Letterboxd Profile</span>
-            <span className="card-badge">Optional</span>
-          </div>
+            <span className="card-title">{t.lbProfile}</span>
+            </div>
           <div className="card-body">
             <p className="card-desc">
-              Enter your Letterboxd username to sync your public Watchlist, Diary and Friends Activity — no password needed.
+              {t.lbDesc}
             </p>
 
             {!lbConnected ? (
@@ -379,9 +476,7 @@ export default function ConfigPage() {
                   onChange={e => setLbInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && connectLb()}
                 />
-                <button className="btn btn-primary btn-sm" onClick={connectLb} disabled={!lbInput.trim()}>
-                  Connect
-                </button>
+                <button className="btn btn-primary btn-sm" onClick={connectLb} disabled={!lbInput.trim()}>{t.connect}</button>
               </div>
             ) : (
               <div className="connected-pill">
@@ -389,7 +484,7 @@ export default function ConfigPage() {
                   <span className="dot" />
                   Connected as <strong>@{config.lbUsername}</strong>
                 </div>
-                <button className="btn btn-danger btn-sm" onClick={disconnectLb}>Disconnect</button>
+                <button className="btn btn-danger btn-sm" onClick={disconnectLb}>{t.disconnect}</button>
               </div>
             )}
           </div>
@@ -399,16 +494,14 @@ export default function ConfigPage() {
         <div className="card">
           <div className="card-head">
             <div className="card-icon">🔑</div>
-            <span className="card-title">TMDB</span>
+            <span className="card-title">{t.tmdbTitle}</span>
             <span className="card-badge">Optional</span>
           </div>
           <div className="card-body">
-            <p className="card-desc">
-              Provide a free TMDB API Key to enable localized posters (e.g. in Italian) and unlock the Recommended catalog. This key is used strictly for posters and recommendations, not for metadata.
-            </p>
+            <p className="card-desc">{t.tmdbDesc}</p>
 
             <div className="field">
-              <label className="label" htmlFor="tmdb-key">TMDB API Key</label>
+              <label className="label" htmlFor="tmdb-key">{t.tmdbKeyLabel}</label>
               <div className="input-row">
                 <input
                   id="tmdb-key"
@@ -422,19 +515,19 @@ export default function ConfigPage() {
                   {showKey ? '🙈' : '👁️'}
                 </button>
                 <button className="btn btn-primary btn-sm" onClick={validateTmdb} disabled={!config.tmdbKey || validating}>
-                  {validating ? '…' : 'Verify'}
+                  {validating ? '…' : t.verify}
                 </button>
               </div>
-              {tmdbStatus === 'ok'  && <p className="status-ok">✓ Valid API Key</p>}
-              {tmdbStatus === 'err' && <p className="status-err">✗ Invalid API Key</p>}
+              {tmdbStatus === 'ok'  && <p className="status-ok">✓ {t.validKey}</p>}
+              {tmdbStatus === 'err' && <p className="status-err">✗ {t.invalidKey}</p>}
               <p className="input-hint">
-                <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noreferrer">Get your free API key here</a>.
+                <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noreferrer">{t.getKey}</a>.
               </p>
             </div>
 
             {config.tmdbKey && (
               <div className="field">
-                <label className="label" htmlFor="language">Poster Language</label>
+                <label className="label" htmlFor="language">{t.posterLang}</label>
                 <select
                   id="language"
                   className="select"
@@ -459,7 +552,7 @@ export default function ConfigPage() {
         <div className="card">
           <div className="card-head">
             <div className="card-icon">📚</div>
-            <span className="card-title">Your Catalogs</span>
+            <span className="card-title">{t.catalogsTitle}</span>
           </div>
           <div className="card-body">
             <div className="catalog-list">
@@ -483,7 +576,7 @@ export default function ConfigPage() {
                 <div className="empty-state">
                   <div className="empty-state-icon">📋</div>
                   <p className="empty-state-text">
-                    Connect your Letterboxd profile above to sync your Watchlist, Diary and Friends Activity.
+                    {t.emptyCatalogs}
                   </p>
                 </div>
               )}
@@ -492,19 +585,17 @@ export default function ConfigPage() {
             <div className="divider" />
 
             <div className="field">
-              <label className="label">Add a Custom List</label>
+              <label className="label">{t.addCustomList}</label>
               <div className="input-row">
                 <input
                   className="input"
                   type="text"
-                  placeholder="Paste Letterboxd List URL…"
+                  placeholder={t.addListPlaceholder}
                   value={listInput}
                   onChange={e => setListInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addList()}
                 />
-                <button className="btn btn-primary btn-sm" onClick={addList} disabled={!listInput}>
-                  Add
-                </button>
+                <button className="btn btn-primary btn-sm" onClick={addList} disabled={!listInput}>{t.addBtn}</button>
               </div>
             </div>
           </div>
@@ -514,34 +605,48 @@ export default function ConfigPage() {
         <div className="card">
           <div className="card-head">
             <div className="card-icon">⚙️</div>
-            <span className="card-title">Global Settings</span>
+            <span className="card-title">{t.globalSettings}</span>
           </div>
           <div className="card-body">
             <div className="field">
-              <label className="label" htmlFor="catalog-prefix">Catalog Name Prefix</label>
+              <label className="label" htmlFor="catalog-prefix">{t.prefixLabel}</label>
               <input
                 id="catalog-prefix"
                 className="input"
                 type="text"
-                placeholder="e.g. Letterboxd"
+                placeholder="e.g. Multiboxd"
                 value={config.catalogPrefix || ''}
                 onChange={e => update('catalogPrefix', e.target.value)}
               />
               <p className="input-hint">
-                Catalogs will appear as <strong>{config.catalogPrefix || 'Letterboxd'} — Watchlist</strong> etc.
+                {t.prefixHint1} <strong>
+                  {!config.hideAddonName && `${config.catalogPrefix || 'Multiboxd'} `}
+                  {!config.hideAddonName && !config.hideHyphen && '— '}
+                  Watchlist
+                </strong>
               </p>
+            </div>
+            
+            <div className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+              <Toggle checked={!!config.hideAddonName} onChange={v => update('hideAddonName', v)} />
+              <label className="label" style={{ margin: 0, cursor: 'pointer' }} onClick={() => update('hideAddonName', !config.hideAddonName)}>{t.hideAddonName}</label>
+            </div>
+
+            <div className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', marginTop: '4px', opacity: config.hideAddonName ? 0.5 : 1, pointerEvents: config.hideAddonName ? 'none' : 'auto' }}>
+              <Toggle checked={!!config.hideHyphen} onChange={v => update('hideHyphen', v)} disabled={!!config.hideAddonName} />
+              <label className="label" style={{ margin: 0, cursor: 'pointer' }} onClick={() => !config.hideAddonName && update('hideHyphen', !config.hideHyphen)}>{t.hideHyphen}</label>
             </div>
           </div>
         </div>
 
         {/* ── Install Card ── */}
         <div className="install-card">
-          <p className="install-title">📡 Addon URL — ready to install</p>
+          <p className="install-title">📡 {t.installTitle}</p>
 
           <div className="install-url-box">
             {encodedUrl
               ? encodedUrl
-              : <span className="install-url-placeholder">Configure at least one catalog to generate the URL…</span>
+              : <span className="install-url-placeholder">{t.installPlaceholder}</span>
             }
           </div>
 
@@ -550,18 +655,14 @@ export default function ConfigPage() {
               href={stremioUrl}
               className={`btn btn-primary install-btn-primary${!encodedUrl ? ' btn-disabled' : ''}`}
               style={!encodedUrl ? { pointerEvents: 'none', opacity: 0.4 } : {}}
-            >
-              Install in Stremio
-            </a>
+            >{t.installStremio}</a>
             <a
               href={stremioWebUrl}
               className={`btn btn-ghost install-btn-secondary${!encodedUrl ? ' btn-disabled' : ''}`}
               style={!encodedUrl ? { pointerEvents: 'none', opacity: 0.4 } : {}}
               target="_blank"
               rel="noreferrer"
-            >
-              Stremio Web
-            </a>
+            >{t.installWeb}</a>
           </div>
 
           <button
@@ -569,71 +670,71 @@ export default function ConfigPage() {
             onClick={handleCopy}
             disabled={!encodedUrl}
           >
-            {copied ? '✓ Copied!' : 'Copy Link'}
+            {copied ? `✓ ${t.copied}` : t.copyLink}
           </button>
         </div>
 
         {/* ── FAQ Section ── */}
         <div className="faq-section">
-          <div className="faq-title">Frequently Asked Questions</div>
+          <div className="faq-title">{t.faqTitle}</div>
 
           <div className={`faq-item ${openFaq === 'q1' ? 'open' : ''}`}>
             <button className="faq-q" onClick={() => toggleFaq('q1')}>
-              <span>What is Multiboxd?</span>
+              <span>{t.faq1q}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
             <div className="faq-a">
-              Multiboxd is a Stremio add-on that allows you to integrate your Letterboxd catalogs directly into the application. You can sync your public Watchlist, Diary, Recommended films based on your taste, friends' activity, and add custom public lists.
+              {t.faq1a}
             </div>
           </div>
 
           <div className={`faq-item ${openFaq === 'q2' ? 'open' : ''}`}>
             <button className="faq-q" onClick={() => toggleFaq('q2')}>
-              <span>How does it differ from other similar add-ons?</span>
+              <span>{t.faq2q}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
             <div className="faq-a">
-              Unlike other add-on configurations, Multiboxd does not provide its own metadata (such as descriptions, cast, trailers, etc.). Instead, it relies on the metadata already available in Stremio. This makes it lightweight and fully compatible with other metadata and playback add-ons you have installed, preventing duplicates or conflicts.
+              {t.faq2a}
             </div>
           </div>
 
           <div className={`faq-item ${openFaq === 'q3' ? 'open' : ''}`}>
             <button className="faq-q" onClick={() => toggleFaq('q3')}>
-              <span>How does the Recommended catalog work?</span>
+              <span>{t.faq3q}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
             <div className="faq-a">
-              The add-on fetches your Letterboxd Diary history (specifically the first page), filters and selects your highest-rated films (assigning weights to each rating), and queries the TMDB API for similar films. These suggestions are then aggregated and sorted to deliver a highly personalized feed.
+              {t.faq3a}
             </div>
           </div>
 
           <div className={`faq-item ${openFaq === 'q4' ? 'open' : ''}`}>
             <button className="faq-q" onClick={() => toggleFaq('q4')}>
-              <span>Why do I need a TMDB API Key?</span>
+              <span>{t.faq4q}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
             <div className="faq-a">
-              The TMDB (The Movie Database) API Key is optional but recommended. Because of how Stremio works, we do not fetch or store any metadata ourselves. The TMDB key is used strictly to retrieve localized posters (e.g. in Italian) in the catalog grid and is required to calculate recommendations (which are computed via TMDB services). It does not affect media playback or core metadata.
+              {t.faq4a}
             </div>
           </div>
 
           <div className={`faq-item ${openFaq === 'q5' ? 'open' : ''}`}>
             <button className="faq-q" onClick={() => toggleFaq('q5')}>
-              <span>Why are descriptions or details missing in &quot;Show All&quot;?</span>
+              <span>{t.faq5q}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
             <div className="faq-a">
-              By design, the add-on does not provide movie metadata to avoid conflicting with other add-ons. Descriptions, trailers, and other details in the catalog view are loaded automatically by Stremio from your other installed metadata add-ons (such as Cinematica or Stremio's default metadata).
+              {t.faq5a}
             </div>
           </div>
         </div>
@@ -657,7 +758,7 @@ export default function ConfigPage() {
             }}
           >
             <span>☕</span>
-            <span>Support me on Ko-fi</span>
+            <span>{t.support}</span>
           </a>
         </div>
 

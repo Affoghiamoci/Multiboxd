@@ -1,119 +1,63 @@
-# Multiboxd 🎬
+# Multiboxd
 
-Multiboxd is a lightweight, self-hosted Stremio add-on that integrates your Letterboxd profile catalogs directly into Stremio. It scrapes Letterboxd (watchlist, diary, friends activity, and custom lists) and enhances the grid with localized poster layouts using TMDB metadata, without overriding or injecting custom streaming sources (keeping it fully compatible with your existing streaming add-ons).
+Multiboxd è un add-on per Stremio che ti permette di integrare i cataloghi di Letterboxd direttamente nell'applicazione. Sincronizza la tua Watchlist, il tuo Diary, i film consigliati in base ai tuoi gusti e le attività dei tuoi amici, oltre a liste pubbliche personalizzate.
 
----
+## Caratteristiche
+- **Nessun metadato proprio**: A differenza di altri add-on, Multiboxd non fornisce metadati (descrizioni, cast, trailer, ecc.), appoggiandosi a quelli già presenti in Stremio. Questo lo rende leggerissimo e compatibile con tutti gli altri add-on, evitando fastidiosi duplicati.
+- **Sincronizzazione Letterboxd**: Inserisci il tuo username e sincronizza le tue liste pubbliche. Nessuna password richiesta!
+- **Supporto TMDB (Opzionale ma Consigliato)**: A causa di come Stremio gestisce i metadati visivi nei cataloghi esterni, è necessario fornire una propria API Key gratuita di TMDB se si desiderano le locandine localizzate (es. in italiano) nel grid dei cataloghi. Questa chiave abilita anche i film consigliati in base ai tuoi gusti.
+- **Supporto Multilingua**: Interfaccia del sito disponibile in Italiano e Inglese.
 
-## Features ✨
+## Come installare l'add-on
+1. Visita la pagina di configurazione (es. [multiboxd.fly.dev](https://multiboxd.fly.dev) o la tua istanza locale)
+2. Inserisci il tuo username Letterboxd.
+3. (Opzionale) Inserisci una API Key TMDB se vuoi locandine localizzate e suggerimenti.
+4. Seleziona i cataloghi che vuoi mostrare su Stremio.
+5. Clicca su **Install in Stremio** o copia l'URL generato.
 
-- **Watchlist Sync**: Sync your public Letterboxd Watchlist.
-- **Diary Integration**: Keep track of your recently watched films.
-- **Friends Activity**: See what your friends are watching on Letterboxd.
-- **Personalized Recommendations**: Aggregates recommendations from TMDB based on your highest-rated films in your Diary, automatically filtering out films you've already logged as watched.
-- **Custom Public Lists**: Paste any public Letterboxd list URL to display it as a custom catalog in Stremio.
-- **Catalog Reordering**: Easily reorder all catalogs directly from the configuration web UI.
-- **Localized Posters**: Multi-language support (Italian, Spanish, French, etc.) using TMDB API keys for posters.
-- **Ultra-lightweight**: No database required. Everything is client-side and encoded securely in the addon installation URL.
+## 💻 Installazione in Locale / Self-Hosting
 
----
+Puoi ospitare facilmente la tua istanza di Multiboxd usando **Docker** o **Node.js**.
 
-## How to Run with Docker 🐳
-
-You can run this project with Docker using local files or directly from GitHub without cloning the repo.
-
-### Option A: Run directly from GitHub (Without cloning)
-
-You can build and run the addon directly from the GitHub repository context.
+### Opzione A: Docker (Consigliata)
+Questo progetto include un `Dockerfile` multipiattaforma ottimizzato.
 
 ```bash
-# 1. Build the image directly from the GitHub repo
-docker build -t multiboxd https://github.com/Affoghiamoci/Multiboxd.git
+# 1. Clona il repository
+git clone https://github.com/Affoghiamoci/Multiboxd.git
+cd Multiboxd
 
-# 2. Run the container (using custom port 11463 to avoid conflicts)
-docker run -d -p 11463:11463 --name multiboxd multiboxd
+# 2. Costruisci l'immagine Docker
+docker build -t multiboxd .
+
+# 3. Avvia il container sulla porta 3000
+docker run -p 3000:3000 multiboxd
 ```
-The configuration UI will be available at **[http://localhost:11463](http://localhost:11463)**.
+L'app sarà disponibile all'indirizzo `http://localhost:3000`.
 
----
+### Opzione B: Node.js (Locale)
+Requisiti: Node.js 18 o superiore.
 
-### Option B: Run locally (Clone required)
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Affoghiamoci/Multiboxd.git
-   cd Multiboxd
-   ```
-
-2. **Using Docker Compose**:
-   Create or modify `docker-compose.yml` to specify your custom external port (e.g. `11463` mapped to internal `11463`):
-   ```yaml
-   services:
-     multiboxd:
-       build: .
-       container_name: multiboxd
-       ports:
-         - "11463:11463"
-       restart: unless-stopped
-   ```
-   Start the service:
-   ```bash
-   docker compose up -d --build
-   ```
-
-3. **Using Docker CLI**:
-   ```bash
-   docker build -t multiboxd .
-   docker run -d -p 11463:11463 --name multiboxd multiboxd
-   ```
-
----
-
-## Manual Installation (Local Node.js) ⚙️
-
-If you want to run the project without Docker:
-
-### Prerequisites
-- Node.js 18+
-- npm
-
-### Installation steps
 ```bash
-# Install dependencies
+# 1. Clona il repository
+git clone https://github.com/Affoghiamoci/Multiboxd.git
+cd Multiboxd
+
+# 2. Installa le dipendenze
 npm install
 
-# Run the development server
-npm run dev
-
-# Or build & start in production mode
+# 3. Costruisci per la produzione (opzionale ma consigliato per le prestazioni)
 npm run build
 npm start
+
+# Oppure, per l'ambiente di sviluppo:
+# npm run dev
 ```
-The server will run on **[http://localhost:3000](http://localhost:3000)**.
+L'app sarà disponibile all'indirizzo `http://localhost:3000`.
 
----
-
-## Configuration & Usage 📡
-
-1. Open the configuration page in your browser (`http://localhost:3000`).
-2. **Letterboxd Profile**: Enter your username to load Watchlist, Diary, and Friends Activity (no password needed, works with public profiles).
-3. **TMDB Key (Optional but Recommended)**:
-   - Provide a free API Key from [TheMovieDB](https://www.themoviedb.org/settings/api).
-   - This unlocks localized posters (e.g. Italian titles/art instead of English defaults) and the **Recommended** catalog.
-4. **Order Catalogs**: Use the **▲ / ▼** buttons to arrange the order of your catalogs.
-5. Click **Install in Stremio** or copy the generated link to manually install it in your Stremio client.
-
----
-
-## Development & Tech Stack 🛠️
-
-- **Framework**: Next.js 15 (App Router)
-- **Styling**: Vanilla CSS (Custom Design System)
-- **Scraper**: Cheerio & Playwright
-- **Cache**: In-memory node-cache (1 hour TTL)
-
----
-
-## Support ☕
-
-If you like this project, consider supporting me:
-- **Ko-fi**: [https://ko-fi.com/affogo](https://ko-fi.com/affogo)
+## 🚀 Deploy su Fly.io
+L'app è già configurata per essere facilmente deployata su [Fly.io](https://fly.io) tramite il file `fly.toml` incluso.
+Ti basta autenticare la CLI di Fly e lanciare:
+```bash
+fly deploy
+```
