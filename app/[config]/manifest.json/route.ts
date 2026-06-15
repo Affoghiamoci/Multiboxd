@@ -98,7 +98,7 @@ export async function GET(
 
   const manifest = {
     id: 'com.multiboxd',
-    version: '0.1.0',
+    version: '0.2.0',
     name: 'Multiboxd',
     description: 'Sync your Letterboxd Watchlist, Diary, Friends Activity and custom lists directly into Stremio — no metadata provided, works alongside your existing addons.',
     logo: 'https://multiboxd.fly.dev/icon.png',
