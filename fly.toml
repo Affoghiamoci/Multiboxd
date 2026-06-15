@@ -1,0 +1,29 @@
+# fly.toml — Multiboxd on Fly.io
+# Docs: https://fly.io/docs/reference/configuration/
+
+app = "multiboxd"
+primary_region = "cdg"   # Parigi — cambia con: ams, fra, lhr, mia, sin…
+                          # Lista completa: fly platform regions
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT     = "3000"
+
+[http_service]
+  internal_port       = 3000
+  force_https         = true
+  auto_stop_machines  = "stop"      # spegne dopo 5min di inattività (tier gratuito)
+  auto_start_machines = true        # si riavvia alla prima richiesta
+  min_machines_running = 0          # 0 = tier gratuito, 1 = sempre acceso (~$1.94/mese)
+
+  [http_service.concurrency]
+    type       = "requests"
+    soft_limit = 50
+    hard_limit = 100
+
+[[vm]]
+  size   = "shared-cpu-1x"   # 256MB RAM — gratuito
+  memory = "256mb"

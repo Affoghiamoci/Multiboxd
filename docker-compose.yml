@@ -1,0 +1,7 @@
+services:
+  multiboxd:
+    build: .
+    container_name: multiboxd
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
