@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
   const host = req.headers.get('host') || 'multiboxd.fly.dev';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
+  const protocol = req.headers.get('x-forwarded-proto') || (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https');
   const origin = `${protocol}://${host}`;
 
   const manifest = {
