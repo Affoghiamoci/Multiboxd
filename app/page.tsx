@@ -478,7 +478,7 @@ export default function ConfigPage() {
 
         {/* ── Header ── */}
         <header className="header">
-          <div className="logo" style={{ display: 'flex', alignItems: 'center' }}>
+          <div className="logo" style={{ display: 'inline-flex', alignItems: 'center' }}>
             <div className="logo-mark" style={{ background: 'transparent', boxShadow: 'none' }}><img src="/icon.png" alt="Logo" width={40} height={40} style={{ borderRadius: '10px' }} /></div>
             <span className="logo-name" style={{ marginRight: '8px' }}>Multiboxd</span>
             <span style={{ fontSize: '13px', color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, background: 'var(--surface-2)', padding: '4px 8px', borderRadius: '12px', border: '1px solid var(--border)' }}>
