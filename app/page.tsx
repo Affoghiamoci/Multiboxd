@@ -130,6 +130,14 @@ const TrashIcon = () => (
   </svg>
 );
 
+const ShuffleIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+    <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+    <line x1="4" y1="4" x2="9" y2="9"/>
+  </svg>
+);
+
 // ── Toggle component ───────────────────────────────────────────────────────────
 function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
   return (
@@ -145,12 +153,14 @@ function CatalogItem({
   title, subtitle, enabled, onToggle,
   nameValue, onNameChange, onDelete, disabled,
   onMoveUp, onMoveDown,
+  shuffled, onShuffleToggle,
 }: {
   title: string; subtitle: string;
   enabled?: boolean; onToggle?: (v: boolean) => void;
   nameValue: string; onNameChange: (v: string) => void;
   onDelete?: () => void; disabled?: boolean;
   onMoveUp?: () => void; onMoveDown?: () => void;
+  shuffled?: boolean; onShuffleToggle?: () => void;
 }) {
   const [editing, setEditing] = useState(false);
 
@@ -185,7 +195,16 @@ function CatalogItem({
       </div>
 
       <div className="catalog-right">
-        
+        {onShuffleToggle && (
+          <button
+            type="button"
+            className={`catalog-shuffle${shuffled ? ' active' : ''}`}
+            onClick={onShuffleToggle}
+            title={shuffled ? 'Disable shuffle' : 'Enable shuffle'}
+          >
+            <ShuffleIcon />
+          </button>
+        )}
         {onDelete && (
           <button type="button" className="catalog-delete" onClick={onDelete}>
             <TrashIcon />
@@ -349,6 +368,8 @@ export default function ConfigPage() {
     onNameChange: (v: string) => void;
     onDelete?: () => void;
     disabled?: boolean;
+    shuffled?: boolean;
+    onShuffleToggle?: () => void;
   }
 
   const itemsToRender: CatalogItemData[] = [];
@@ -396,6 +417,7 @@ export default function ConfigPage() {
   config.catalogs.customLists.forEach((list) => {
     const slug = typeof list === 'string' ? list : list.slug;
     const name = typeof list === 'object' && list.name ? list.name : '';
+    const isShuffled = typeof list === 'object' && !!list.shuffle;
     const safeSlug = slug.replace(/\//g, '__');
     const display = name || slug.split('/').pop()?.split('-').map(w => w ? w.charAt(0).toUpperCase() + w.slice(1) : '').join(' ') || slug;
 
@@ -407,11 +429,23 @@ export default function ConfigPage() {
       onNameChange: (v) => {
         const newList = config.catalogs.customLists.map((l) => {
           const ls = typeof l === 'string' ? l : l.slug;
-          return ls === slug ? { slug: ls, name: v } : l;
+          return ls === slug ? { slug: ls, name: v, shuffle: typeof l === 'object' ? l.shuffle : undefined } : l;
         });
         updateCatalog('customLists', newList);
       },
       onDelete: () => removeList(slug),
+      shuffled: isShuffled,
+      onShuffleToggle: () => {
+        const newList = config.catalogs.customLists.map((l) => {
+          const ls = typeof l === 'string' ? l : l.slug;
+          if (ls === slug) {
+            const current = typeof l === 'object' ? l : { slug: l };
+            return { ...current, shuffle: !current.shuffle };
+          }
+          return l;
+        });
+        updateCatalog('customLists', newList);
+      },
     });
   });
 
@@ -570,6 +604,8 @@ export default function ConfigPage() {
                     disabled={item.disabled}
                     onMoveUp={index > 0 ? () => moveItem(index, 'up') : undefined}
                     onMoveDown={index < sortedItems.length - 1 ? () => moveItem(index, 'down') : undefined}
+                    shuffled={item.shuffled}
+                    onShuffleToggle={item.onShuffleToggle}
                   />
                 ))
               ) : (

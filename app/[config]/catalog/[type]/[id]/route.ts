@@ -112,6 +112,38 @@ export async function GET(
     } else if (id.startsWith('lb-list-')) {
       const slug = id.replace('lb-list-', '').replace(/__/g, '/');
       films = await getPublicList(slug, page);
+
+      // Check if shuffle is enabled for this custom list
+      const listEntry = config.catalogs.customLists.find(l => {
+        const s = typeof l === 'string' ? l : l.slug;
+        return s === slug;
+      });
+      const shouldShuffle = listEntry && typeof listEntry === 'object' && listEntry.shuffle;
+
+      if (shouldShuffle && films.length > 1) {
+        // Seeded shuffle (consistent per day) using a simple hash
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        let seed = 0;
+        const seedStr = slug + today;
+        for (let i = 0; i < seedStr.length; i++) {
+          seed = ((seed << 5) - seed + seedStr.charCodeAt(i)) | 0;
+        }
+        // Simple seeded PRNG (mulberry32)
+        const mulberry32 = (s: number) => {
+          return () => {
+            s |= 0; s = s + 0x6D2B79F5 | 0;
+            let t = Math.imul(s ^ s >>> 15, 1 | s);
+            t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+          };
+        };
+        const rng = mulberry32(seed);
+        // Fisher-Yates shuffle
+        for (let i = films.length - 1; i > 0; i--) {
+          const j = Math.floor(rng() * (i + 1));
+          [films[i], films[j]] = [films[j], films[i]];
+        }
+      }
     }
 
     const resolved = await resolveImdbIds(films, config.lbSessionToken);

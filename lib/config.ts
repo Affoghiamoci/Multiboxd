@@ -7,6 +7,7 @@
 export interface CustomList {
   slug: string;
   name?: string;
+  shuffle?: boolean;
 }
 
 export interface CatalogConfig {
