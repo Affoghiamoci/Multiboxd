@@ -19,30 +19,52 @@ Multiboxd is a lightweight, self-hosted Stremio add-on that integrates your Lett
 
 ## How to Run with Docker 🐳
 
-You can clone the repository and spin up the add-on using Docker in less than a minute.
+You can run this project with Docker using local files or directly from GitHub without cloning the repo.
 
-### 1. Clone the repository
+### Option A: Run directly from GitHub (Without cloning)
+
+You can build and run the addon directly from the GitHub repository context.
+
 ```bash
-git clone https://github.com/Affoghiamoci/Multiboxd.git
-cd Multiboxd
-```
+# 1. Build the image directly from the GitHub repo
+docker build -t multiboxd https://github.com/Affoghiamoci/Multiboxd.git
 
-### 2. Run with Docker Compose
-Simply start the service in background mode:
-```bash
-docker compose up -d --build
+# 2. Run the container (using custom port 11463 to avoid conflicts)
+docker run -d -p 11463:11463 --name multiboxd multiboxd
 ```
-The configuration UI will be available at **[http://localhost:3000](http://localhost:3000)**.
+The configuration UI will be available at **[http://localhost:11463](http://localhost:11463)**.
 
-### 3. Run with Docker CLI
-If you prefer not to use Compose:
-```bash
-# Build the image
-docker build -t multiboxd .
+---
 
-# Run the container
-docker run -d -p 3000:3000 --name multiboxd multiboxd
-```
+### Option B: Run locally (Clone required)
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Affoghiamoci/Multiboxd.git
+   cd Multiboxd
+   ```
+
+2. **Using Docker Compose**:
+   Create or modify `docker-compose.yml` to specify your custom external port (e.g. `11463` mapped to internal `11463`):
+   ```yaml
+   services:
+     multiboxd:
+       build: .
+       container_name: multiboxd
+       ports:
+         - "11463:11463"
+       restart: unless-stopped
+   ```
+   Start the service:
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. **Using Docker CLI**:
+   ```bash
+   docker build -t multiboxd .
+   docker run -d -p 11463:11463 --name multiboxd multiboxd
+   ```
 
 ---
 

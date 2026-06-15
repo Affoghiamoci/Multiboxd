@@ -27,7 +27,7 @@ RUN apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=11463
 ENV HOSTNAME=0.0.0.0
 # Tell Playwright to use the system Chromium instead of downloading its own
 ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
@@ -37,5 +37,5 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-EXPOSE 3000
+EXPOSE 11463
 CMD ["node", "server.js"]
