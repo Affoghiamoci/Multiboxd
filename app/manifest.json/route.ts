@@ -19,6 +19,10 @@ export async function GET(req: Request) {
       configurable: true,
       configurationRequired: true,
     },
+    stremioAddonsConfig: {
+      issuer: 'https://stremio-addons.net',
+      signature: 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..rI3nYCw_vgQJgPFC1qWYsQ.E1jpHmWIMH9X7kaChnEAiz8UgvZ7c1bg87Hl16jc8TaJ-TyEukdSVS-HYpqDgWVDDrRmJP5UTMGXvyrmHEF1FWLs-cKmGt6O614xc69XV6M0RbO8kt-M3Fk33p4Uaxvy.NZgirOzGtbfIfzAm7QcOOg',
+    },
   };
 
   return NextResponse.json(manifest, {
