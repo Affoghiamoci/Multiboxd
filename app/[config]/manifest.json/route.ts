@@ -117,10 +117,7 @@ export async function GET(
   };
 
   if (!isConfigValid(config)) {
-    return NextResponse.json(
-      { error: 'Chiave TMDB mancante o non valida. Riconfigura l\'addon.' },
-      { status: 400 }
-    );
+    manifest.behaviorHints.configurationRequired = true;
   }
 
   return NextResponse.json(manifest, {

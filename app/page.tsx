@@ -269,11 +269,11 @@ export default function ConfigPage() {
   }, []);
 
   useEffect(() => {
-    if (!config.lbUsername) {
-      setEncodedUrl('');
-      return;
+    if (!config.lbUsername && !config.catalogs.friendsActivity && !config.catalogs.watchlist && !config.catalogs.diary && config.catalogs.customLists.length === 0) {
+      setEncodedUrl(`${baseUrl}/manifest.json`);
+    } else {
+      setEncodedUrl(`${baseUrl}/${encodeConfig(config)}/manifest.json`);
     }
-    setEncodedUrl(`${baseUrl}/${encodeConfig(config)}/manifest.json`);
   }, [config, baseUrl]);
 
   const update = useCallback(<K extends keyof AddonConfig>(k: K, v: AddonConfig[K]) => {
