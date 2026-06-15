@@ -8,6 +8,11 @@ Multiboxd è un add-on per Stremio che ti permette di integrare i cataloghi di L
 - **Supporto TMDB (Opzionale ma Consigliato)**: A causa di come Stremio gestisce i metadati visivi nei cataloghi esterni, è necessario fornire una propria API Key gratuita di TMDB se si desiderano le locandine localizzate (es. in italiano) nel grid dei cataloghi. Questa chiave abilita anche i film consigliati in base ai tuoi gusti.
 - **Supporto Multilingua**: Interfaccia del sito disponibile in Italiano e Inglese.
 
+## 📝 Note sul caricamento
+Per ottimizzare i tempi di risposta ed evitare ban da parte di Letterboxd, i cataloghi vengono caricati a scaglioni di circa **100 film alla volta** mentre scorri nell'app di Stremio.
+- **Liste Custom Molto Lunghe**: Se aggiungi una lista pubblica molto lunga (oltre i 100 film) e vuoi scoprire film sempre diversi presi da *tutta* la lista, ti consigliamo fortemente di attivare lo **Shuffle (🔀)** in fase di configurazione. Attivando lo shuffle, l'addon scaricherà e mescolerà l'intera lista in background prima di mostrarti i blocchi da 100.
+- Il limite di caricamento a blocchi si applica a tutti i cataloghi, ma per Watchlist e Diario lo scorrimento progressivo di Stremio permette di caricare le pagine successive senza problemi.
+
 ## Come installare l'add-on
 1. Visita la pagina di configurazione (es. [multiboxd.fly.dev](https://multiboxd.fly.dev) o la tua istanza locale)
 2. Inserisci il tuo username Letterboxd.
