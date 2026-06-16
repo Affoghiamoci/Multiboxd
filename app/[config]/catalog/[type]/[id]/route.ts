@@ -122,7 +122,7 @@ export async function GET(
 
       return NextResponse.json(
         { metas: filteredRecs.map(r => ({ id: r.imdbId, type: 'movie' as const, name: r.title, poster: r.poster, releaseInfo: r.year })) },
-        { headers: { ...CORS, 'Cache-Control': 'max-age=900, stale-while-revalidate=3600' } }
+        { headers: { ...CORS, 'Cache-Control': 'max-age=43200, stale-while-revalidate=43200' } }
       );
     } else if (id.startsWith('lb-list-')) {
       const slug = id.replace('lb-list-', '').replace(/__/g, '/');
@@ -202,12 +202,15 @@ export async function GET(
       }));
     }
 
+    const maxAge = id === 'lb-watchlist' ? 900 : 43200;
+    const staleWhileRevalidate = id === 'lb-watchlist' ? 3600 : 43200;
+
     return NextResponse.json(
       { metas },
       {
         headers: {
           ...CORS,
-          'Cache-Control': 'max-age=900, stale-while-revalidate=3600',
+          'Cache-Control': `max-age=${maxAge}, stale-while-revalidate=${staleWhileRevalidate}`,
         },
       }
     );
