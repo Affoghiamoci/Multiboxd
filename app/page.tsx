@@ -48,7 +48,12 @@ const TRANSLATIONS = {
     faq5q: 'Why are descriptions or details missing in "Show All"?',
     faq5a: 'By design, the add-on does not provide movie metadata to avoid conflicting with other add-ons. Descriptions, trailers, and other details in the catalog view are loaded automatically by Stremio from your other installed metadata add-ons (such as Cinematica or Stremio\'s default metadata).',
     support: 'Support me on Ko-fi',
-    footer: 'Developed with ♥ for the Stremio community'
+    footer: 'Developed with ♥ for the Stremio community',
+    connectedAs: 'Connected as',
+    subRecommended: 'Films recommended based on your taste',
+    subDiary: 'Your recently watched films',
+    subWatchlist: 'Films you want to watch',
+    subFriends: 'Recently watched by your friends'
   },
   it: {
     sub: 'Aggiungi i cataloghi Letterboxd direttamente su Stremio.',
@@ -93,7 +98,12 @@ const TRANSLATIONS = {
     faq5q: 'Perché mancano le descrizioni o i dettagli in "Mostra Tutti"?',
     faq5a: 'L\'add-on non fornisce intenzionalmente i metadati dei film. Le descrizioni, i trailer e gli altri dettagli nella vista catalogo vengono caricati in automatico da Stremio e dagli altri add-on di metadati installati (come Cinematica o i metadati di default di Stremio).',
     support: 'Supportami su Ko-fi',
-    footer: 'Sviluppato con ♥ per la community di Stremio'
+    footer: 'Sviluppato con ♥ per la community di Stremio',
+    connectedAs: 'Connesso come',
+    subRecommended: 'Film consigliati in base ai tuoi gusti',
+    subDiary: 'I tuoi film visti di recente',
+    subWatchlist: 'Film che vuoi vedere',
+    subFriends: 'Visti di recente dai tuoi amici'
   }
 };
 
@@ -138,7 +148,22 @@ const ShuffleIcon = () => (
   </svg>
 );
 
-// ── Toggle component ───────────────────────────────────────────────────────────
+const EyeIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+);
+
+const EyeOffIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+    <line x1="1" y1="1" x2="23" y2="23"/>
+  </svg>
+);
+
+
 function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
   return (
     <label className="toggle">
@@ -378,7 +403,7 @@ export default function ConfigPage() {
     itemsToRender.push({
       id: 'lb-recommendations',
       title: 'Recommended',
-      subtitle: 'Films recommended based on your taste',
+      subtitle: t.subRecommended,
       enabled: config.catalogs.recommendations,
       onToggle: (v) => updateCatalog('recommendations', v),
       nameValue: config.recommendationsName || '',
@@ -388,7 +413,7 @@ export default function ConfigPage() {
     itemsToRender.push({
       id: 'lb-diary',
       title: 'Diary',
-      subtitle: 'Your recently watched films',
+      subtitle: t.subDiary,
       enabled: config.catalogs.diary,
       onToggle: (v) => updateCatalog('diary', v),
       nameValue: config.diaryName || '',
@@ -397,7 +422,7 @@ export default function ConfigPage() {
     itemsToRender.push({
       id: 'lb-watchlist',
       title: 'Watchlist',
-      subtitle: 'Films you want to watch',
+      subtitle: t.subWatchlist,
       enabled: config.catalogs.watchlist,
       onToggle: (v) => updateCatalog('watchlist', v),
       nameValue: config.watchlistName || '',
@@ -406,7 +431,7 @@ export default function ConfigPage() {
     itemsToRender.push({
       id: 'lb-friends',
       title: 'Friends Activity',
-      subtitle: 'Recently watched by your friends',
+      subtitle: t.subFriends,
       enabled: config.catalogs.friendsActivity,
       onToggle: (v) => updateCatalog('friendsActivity', v),
       nameValue: config.friendsName || '',
@@ -520,7 +545,7 @@ export default function ConfigPage() {
               <div className="connected-pill">
                 <div className="connected-pill-label">
                   <span className="dot" />
-                  Connected as <strong>@{config.lbUsername}</strong>
+                  {t.connectedAs} <strong>@{config.lbUsername}</strong>
                 </div>
                 <button className="btn btn-danger btn-sm" onClick={disconnectLb}>{t.disconnect}</button>
               </div>
@@ -541,17 +566,19 @@ export default function ConfigPage() {
             <div className="field">
               <label className="label" htmlFor="tmdb-key">{t.tmdbKeyLabel}</label>
               <div className="input-row">
-                <input
-                  id="tmdb-key"
-                  className="input"
-                  type={showKey ? 'text' : 'password'}
-                  placeholder="e.g. e9b6b55e1..."
-                  value={config.tmdbKey || ''}
-                  onChange={e => { update('tmdbKey', e.target.value); setTmdbStatus('idle'); }}
-                />
-                <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setShowKey(v => !v)} title="Toggle visibility">
-                  {showKey ? '🙈' : '👁️'}
-                </button>
+                <div className="input-with-icon">
+                  <input
+                    id="tmdb-key"
+                    className="input input-has-icon"
+                    type={showKey ? 'text' : 'password'}
+                    placeholder="e.g. e9b6b55e1..."
+                    value={config.tmdbKey || ''}
+                    onChange={e => { update('tmdbKey', e.target.value); setTmdbStatus('idle'); }}
+                  />
+                  <button className="input-icon-btn" onClick={() => setShowKey(v => !v)} title="Toggle visibility" type="button">
+                    {showKey ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
                 <button className="btn btn-primary btn-sm" onClick={validateTmdb} disabled={!config.tmdbKey || validating}>
                   {validating ? '…' : t.verify}
                 </button>
