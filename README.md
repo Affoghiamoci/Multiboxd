@@ -5,7 +5,7 @@ Multiboxd è un add-on per Stremio che ti permette di integrare i cataloghi di L
 ## Caratteristiche
 - **Nessun metadato proprio**: A differenza di altri add-on, Multiboxd non fornisce metadati (descrizioni, cast, trailer, ecc.), appoggiandosi a quelli già presenti in Stremio. Questo lo rende leggerissimo e compatibile con tutti gli altri add-on, evitando fastidiosi duplicati.
 - **Sincronizzazione Letterboxd**: Inserisci il tuo username e sincronizza le tue liste pubbliche. Nessuna password richiesta!
-- **Supporto TMDB (Opzionale ma Consigliato)**: A causa di come Stremio gestisce i metadati visivi nei cataloghi esterni, è necessario fornire una propria API Key gratuita di TMDB se si desiderano le locandine localizzate (es. in italiano) nel grid dei cataloghi. Questa chiave abilita anche i film consigliati in base ai tuoi gusti.
+- **Supporto TMDB (Opzionale ma Consigliato)**: A causa di come Stremio gestisce i metadati visivi nei cataloghi esterni, è necessario fornire una propria API Key gratuita di TMDB se si desiderano locandine e titoli localizzati (es. in italiano) nel grid dei cataloghi. Questa chiave abilita anche i film consigliati in base ai tuoi gusti.
 - **Supporto Multilingua**: Interfaccia del sito disponibile in Italiano e Inglese.
 
 ## 📝 Note sul caricamento
