@@ -60,27 +60,27 @@ export async function GET(
     } else if (id === 'lb-watched' && config.lbUsername) {
       films = await getWatched(config.lbUsername, config.lbSessionToken, page);
     } else if (id === 'lb-recommendations' && config.lbUsername && config.tmdbKey) {
-      // 1. Fetch Diary (page 1)
-      const diary = await getDiary(config.lbUsername, undefined, 1);
+      // 1. Fetch Watched (page 1)
+      const watchedSeeds = await getWatched(config.lbUsername, undefined, 1);
       
-      // 2. Resolve IMDB IDs for all diary movies on page 1
-      const resolvedDiary = await resolveImdbIds(diary, undefined);
+      // 2. Resolve IMDB IDs for all movies on page 1
+      const resolvedWatched = await resolveImdbIds(watchedSeeds, undefined);
       
-      // 3. Find TMDB IDs for all diary movies on page 1 to filter them out of recommendations
-      const diaryTmdbIds = new Set<number>();
-      await Promise.all(resolvedDiary.map(async (f) => {
+      // 3. Find TMDB IDs for all movies on page 1 to filter them out of recommendations
+      const seedTmdbIds = new Set<number>();
+      await Promise.all(resolvedWatched.map(async (f) => {
         if (!f.imdbId) return;
         try {
           const tmdbData = await findByImdb(f.imdbId, config.tmdbKey!, config.language || 'it-IT');
           if (tmdbData?.tmdbId) {
-            diaryTmdbIds.add(tmdbData.tmdbId);
+            seedTmdbIds.add(tmdbData.tmdbId);
           }
         } catch {}
       }));
 
       // 4. Sort by rating (highest first) and take the top 10 rated movies.
       // If a movie has no rating, assume a default weight (e.g. 5/10).
-      const topRated = resolvedDiary
+      const topRated = resolvedWatched
         .map(f => ({ ...f, weight: f.rating ? f.rating / 10 : 0.5 }))
         .sort((a, b) => b.weight - a.weight)
         .slice(0, 10);
@@ -103,12 +103,12 @@ export async function GET(
       const allWatchedFilms = await getAllWatchedFilms(config.lbUsername);
       const normalizeTitle = (t: string) => t.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, ' ').trim();
 
-      // 7. Filter out recommendations that are already in the diary or watched list
+      // 7. Filter out recommendations that are already in the watched list
       const filteredRecs = recs.filter(r => {
         const tmdbIdStr = r.imdbId.startsWith('tmdb:') ? r.imdbId.split(':')[1] : null;
         if (tmdbIdStr) {
           const tmdbId = parseInt(tmdbIdStr, 10);
-          if (diaryTmdbIds.has(tmdbId)) return false;
+          if (seedTmdbIds.has(tmdbId)) return false;
         }
         
         const rTitleNorm = normalizeTitle(r.title);

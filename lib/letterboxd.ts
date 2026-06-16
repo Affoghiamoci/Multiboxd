@@ -349,7 +349,7 @@ export async function getFriendsActivity(_sessionToken?: string, page = 1, usern
     [allFilms[i], allFilms[j]] = [allFilms[j], allFilms[i]];
   }
 
-  cache.set(cacheKey, allFilms, 600);
+  cache.set(cacheKey, allFilms, 3600);
   return allFilms;
 }
 

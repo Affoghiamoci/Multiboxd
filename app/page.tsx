@@ -46,9 +46,11 @@ const TRANSLATIONS = {
     faq4q: 'Why do I need a TMDB API Key?',
     faq4a: 'The TMDB (The Movie Database) API Key is optional but recommended. Because of how Stremio works, we do not fetch or store any core metadata ourselves. The TMDB key is used strictly to retrieve localized posters and titles (e.g. in Italian) in the catalog grid and is required to calculate recommendations (which are computed via TMDB services). It does not affect media playback or core metadata.',
     faq5q: 'How does the Recommended catalog work?',
-    faq5a: 'The add-on fetches your Letterboxd Diary history (specifically the first page), filters and selects your highest-rated films (assigning weights to each rating), and queries the TMDB API for similar films. These suggestions are then aggregated and sorted to deliver a highly personalized feed.',
+    faq5a: 'The add-on fetches your recently Watched films (specifically the first page) to find your recent highly-rated films. It queries the TMDB API for similar films, and then filters the results against your entire Watched list so you only get unseen recommendations.',
     faq6q: 'What are RPDB and OpenPosterDB, and where do I get the API Key?',
     faq6a: 'They are services that add ratings (like Letterboxd or IMDb) directly onto movie posters. OpenPosterDB is a free open-source alternative to RPDB. You can test RPDB by entering the public free key "t0-free-rpdb". However, since it is a shared key used by thousands of people, it might be slow. For a smooth experience and to customize the visual style, we recommend getting your own personal key from RPDB\'s Patreon or registering for a free key on OpenPosterDB.',
+    faq7q: 'How often do the catalogs update?',
+    faq7a: 'Your Watchlist, Diary, Watched, Recommended films, and Custom Lists update approximately every 15 minutes. The Friends Activity catalog updates every hour.',
     support: 'Support me on Ko-fi',
     footer: 'Developed with ♥ for the Stremio community',
     connectedAs: 'Connected as',
@@ -109,9 +111,11 @@ const TRANSLATIONS = {
     faq4q: 'Perché mi serve una TMDB API Key?',
     faq4a: 'La TMDB API Key è opzionale ma fortemente raccomandata. La chiave viene usata strettamente per scaricare locandine e titoli localizzati (es. in italiano) nel grid del catalogo e per calcolare i film consigliati (che passano tramite i servizi di TMDB). Non influisce né sulla riproduzione né sui metadati principali.',
     faq5q: 'Come funziona il catalogo dei Film Consigliati?',
-    faq5a: 'L\'add-on analizza la cronologia del tuo Diary (nello specifico la prima pagina), filtra e seleziona i film a cui hai dato il voto più alto (assegnando pesi a ciascun voto) e interroga l\'API di TMDB per trovare titoli simili. Questi suggerimenti vengono poi aggregati e ordinati per offrirti un feed personalizzato.',
+    faq5a: 'L\'add-on analizza la cronologia dei tuoi film Visti (nello specifico la prima pagina) per trovare i titoli recenti a cui hai dato il voto più alto. Interroga poi l\'API di TMDB per trovare film simili e filtra i risultati confrontandoli con tutta la tua lista dei film Visti (Watched), per suggerirti solo film che non hai ancora visto.',
     faq6q: 'Cosa sono RPDB e OpenPosterDB e dove trovo la API Key?',
     faq6a: 'Sono servizi che aggiungono i voti (come quelli di Letterboxd o IMDb) stampati direttamente sulle locandine. OpenPosterDB è l\'alternativa gratuita e open-source a RPDB. Puoi testare RPDB inserendo la chiave pubblica "t0-free-rpdb". Tuttavia, essendo condivisa con migliaia di persone, potrebbe essere lenta. Per un\'esperienza fluida ti consigliamo di ottenere una tua API Key personale tramite il Patreon di RPDB o registrandoti gratuitamente su OpenPosterDB.',
+    faq7q: 'Ogni quanto si aggiornano i cataloghi?',
+    faq7a: 'La tua Watchlist, il Diary, i film Visti (Watched), i Consigliati e le Liste Personalizzate si aggiornano circa ogni 15 minuti. Il catalogo dell\'Attività degli Amici si aggiorna ogni ora.',
     support: 'Supportami su Ko-fi',
     footer: 'Sviluppato con ♥ per la community di Stremio',
     connectedAs: 'Connesso come',
@@ -944,6 +948,18 @@ export default function ConfigPage() {
             </button>
             <div className="faq-a">
               {t.faq6a}
+            </div>
+          </div>
+
+          <div className={`faq-item ${openFaq === 'q7' ? 'open' : ''}`}>
+            <button className="faq-q" onClick={() => toggleFaq('q7')}>
+              <span>{t.faq7q}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className="faq-a">
+              {t.faq7a}
             </div>
           </div>
         </div>
