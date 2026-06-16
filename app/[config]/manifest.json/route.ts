@@ -46,6 +46,15 @@ export async function GET(
     });
   }
 
+  if (config.catalogs?.watched && config.lbUsername) {
+    catalogs.push({ 
+      type: 'movie', 
+      id: 'lb-watched', 
+      name: formatName(config.watchedName || 'Watched'), 
+      extra: [{ name: 'skip', isRequired: false }] 
+    });
+  }
+
   if (config.catalogs?.friendsActivity && config.lbUsername) {
     catalogs.push({ 
       type: 'movie', 
@@ -102,7 +111,7 @@ export async function GET(
 
   const manifest = {
     id: 'com.multiboxd',
-    version: '0.3.0',
+    version: '0.3.1',
     name: 'Multiboxd',
     description: 'Sync your Letterboxd Watchlist, Diary, Friends Activity and custom lists directly into Stremio — no metadata provided, works alongside your existing addons.',
     logo: `${origin}/icon.png`,

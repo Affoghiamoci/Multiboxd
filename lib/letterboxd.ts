@@ -250,6 +250,68 @@ export async function getDiary(username: string, _sessionToken?: string, page = 
   return films;
 }
 
+export async function getWatched(username: string, _sessionToken?: string, page = 1): Promise<LbFilm[]> {
+  const cacheKey = `lb:watched:${username}:${page}`;
+  const cached = cache.get<LbFilm[]>(cacheKey);
+  if (cached) return cached;
+  const urlPath = page === 1 ? `/${username}/films/` : `/${username}/films/page/${page}/`;
+  const html = await lbGet(urlPath);
+  if (!html) return [];
+  const $ = cheerio.load(html);
+  const films = extractFilmsFromGrid($);
+  cache.set(cacheKey, films);
+  return films;
+}
+
+export async function getAllWatchedFilms(username: string, concurrency = 3): Promise<LbFilm[]> {
+  const cacheKey = `lb:watched-all:${username}`;
+  const cached = cache.get<LbFilm[]>(cacheKey);
+  if (cached) return cached;
+
+  const html = await lbGet(`/${username}/films/`);
+  if (!html) return [];
+  
+  const $ = cheerio.load(html);
+  const firstPageFilms = extractFilmsFromGrid($);
+  
+  let totalPages = 1;
+  const paginationLinks = $('.paginate-page a');
+  if (paginationLinks.length > 0) {
+    const lastPageHref = paginationLinks.last().attr('href') || '';
+    const match = lastPageHref.match(/\/page\/(\d+)\/?$/);
+    if (match && match[1]) {
+      totalPages = parseInt(match[1], 10);
+    }
+  }
+
+  // To avoid hitting rate limits or timeouts, cap max pages to scrape for filtering
+  // 20 pages = ~1400 movies. Should be enough for recent/most relevant watch history.
+  const MAX_PAGES = 20; 
+  const pagesToFetch = Array.from(
+    { length: Math.min(totalPages, MAX_PAGES) - 1 }, 
+    (_, i) => i + 2
+  );
+  
+  const allFilms = [...firstPageFilms];
+  
+  for (let i = 0; i < pagesToFetch.length; i += concurrency) {
+    const batch = pagesToFetch.slice(i, i + concurrency);
+    const results = await Promise.all(
+      batch.map(async (p) => {
+        const pageHtml = await lbGet(`/${username}/films/page/${p}/`);
+        if (!pageHtml) return [];
+        return extractFilmsFromGrid(cheerio.load(pageHtml));
+      })
+    );
+    for (const films of results) {
+      allFilms.push(...films);
+    }
+  }
+
+  cache.set(cacheKey, allFilms, 900); // 15 min cache
+  return allFilms;
+}
+
 export async function getFriendsActivity(_sessionToken?: string, page = 1, username?: string): Promise<LbFilm[]> {
   if (!username || page > 1) return [];
   const cacheKey = `lb:friends:${username}`;

@@ -10,7 +10,9 @@ import {
   getFriendsActivity,
   getWatchlist,
   getDiary,
+  getWatched,
   getPublicList,
+  getAllWatchedFilms,
   getAllPublicListFilms,
   resolveImdbIds,
   LbFilm,
@@ -55,6 +57,8 @@ export async function GET(
       films = await getWatchlist(config.lbUsername, config.lbSessionToken, page);
     } else if (id === 'lb-diary' && config.lbUsername) {
       films = await getDiary(config.lbUsername, config.lbSessionToken, page);
+    } else if (id === 'lb-watched' && config.lbUsername) {
+      films = await getWatched(config.lbUsername, config.lbSessionToken, page);
     } else if (id === 'lb-recommendations' && config.lbUsername && config.tmdbKey) {
       // 1. Fetch Diary (page 1)
       const diary = await getDiary(config.lbUsername, undefined, 1);
@@ -96,14 +100,24 @@ export async function GET(
       // 6. Fetch weighted recommendations
       const recs = await getRecommendations(tmdbSources, config.tmdbKey, config.language || 'it-IT');
       
-      // 7. Filter out recommendations that are already in the diary
+      const allWatchedFilms = await getAllWatchedFilms(config.lbUsername);
+      const normalizeTitle = (t: string) => t.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, ' ').trim();
+
+      // 7. Filter out recommendations that are already in the diary or watched list
       const filteredRecs = recs.filter(r => {
         const tmdbIdStr = r.imdbId.startsWith('tmdb:') ? r.imdbId.split(':')[1] : null;
         if (tmdbIdStr) {
           const tmdbId = parseInt(tmdbIdStr, 10);
-          return !diaryTmdbIds.has(tmdbId);
+          if (diaryTmdbIds.has(tmdbId)) return false;
         }
-        return true;
+        
+        const rTitleNorm = normalizeTitle(r.title);
+        const isWatched = allWatchedFilms.some(w => 
+          normalizeTitle(w.title) === rTitleNorm && 
+          w.year === r.year
+        );
+        
+        return !isWatched;
       });
 
       return NextResponse.json(

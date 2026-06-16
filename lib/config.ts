@@ -14,6 +14,7 @@ export interface CatalogConfig {
   friendsActivity: boolean;
   watchlist: boolean;
   diary: boolean;
+  watched: boolean;
   recommendations: boolean;
   customLists: CustomList[];
 }
@@ -29,6 +30,7 @@ export interface AddonConfig {
   hideHyphen?: boolean;
   watchlistName?: string;
   diaryName?: string;
+  watchedName?: string;
   friendsName?: string;
   recommendationsName?: string;
   lbSessionToken?: string;
@@ -47,6 +49,7 @@ const DEFAULT_CONFIG: AddonConfig = {
     friendsActivity: false,
     watchlist: false,
     diary: false,
+    watched: false,
     recommendations: false,
     customLists: [],
   },
@@ -98,6 +101,7 @@ export function isConfigValid(config: AddonConfig): boolean {
   return config.catalogs.friendsActivity || 
          config.catalogs.watchlist || 
          config.catalogs.diary || 
+         config.catalogs.watched ||
          config.catalogs.customLists.length > 0;
 }
 

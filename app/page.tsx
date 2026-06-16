@@ -54,6 +54,7 @@ const TRANSLATIONS = {
     connectedAs: 'Connected as',
     subRecommended: 'Films recommended based on your taste',
     subDiary: 'Your recently watched films',
+    subWatched: 'All your watched films',
     subWatchlist: 'Films you want to watch',
     subFriends: 'Recently watched by your friends',
     voteText: 'Support me with a vote',
@@ -116,6 +117,7 @@ const TRANSLATIONS = {
     connectedAs: 'Connesso come',
     subRecommended: 'Film consigliati in base ai tuoi gusti',
     subDiary: 'I tuoi film visti di recente',
+    subWatched: 'Tutti i tuoi film visti',
     subWatchlist: 'Film che vuoi vedere',
     subFriends: 'Visti di recente dai tuoi amici',
     voteText: 'Supportami con un voto',
@@ -138,6 +140,7 @@ const DEFAULT_CONFIG: AddonConfig = {
     friendsActivity: false,
     watchlist: false,
     diary: false,
+    watched: false,
     recommendations: false,
     customLists: [],
   },
@@ -321,7 +324,7 @@ export default function ConfigPage() {
   }, []);
 
   useEffect(() => {
-    if (!config.lbUsername && !config.catalogs.friendsActivity && !config.catalogs.watchlist && !config.catalogs.diary && config.catalogs.customLists.length === 0) {
+    if (!config.lbUsername && !config.catalogs.friendsActivity && !config.catalogs.watchlist && !config.catalogs.diary && !config.catalogs.watched && config.catalogs.customLists.length === 0) {
       setEncodedUrl(`${baseUrl}/manifest.json`);
     } else {
       setEncodedUrl(`${baseUrl}/${encodeConfig(config)}/manifest.json`);
@@ -386,7 +389,7 @@ export default function ConfigPage() {
     setConfig(prev => ({
       ...prev,
       lbUsername: undefined,
-      catalogs: { ...prev.catalogs, friendsActivity: false, watchlist: false, diary: false, recommendations: false },
+      catalogs: { ...prev.catalogs, friendsActivity: false, watchlist: false, diary: false, watched: false, recommendations: false },
     }));
     setLbConnected(false);
     setLbInput('');
@@ -467,6 +470,15 @@ export default function ConfigPage() {
       onNameChange: (v) => update('diaryName', v),
     });
     itemsToRender.push({
+      id: 'lb-watched',
+      title: 'Watched',
+      subtitle: t.subWatched,
+      enabled: config.catalogs.watched,
+      onToggle: (v) => updateCatalog('watched', v),
+      nameValue: config.watchedName || '',
+      onNameChange: (v) => update('watchedName', v),
+    });
+    itemsToRender.push({
       id: 'lb-watchlist',
       title: 'Watchlist',
       subtitle: t.subWatchlist,
@@ -521,7 +533,7 @@ export default function ConfigPage() {
     });
   });
 
-  const defaultOrder = ['lb-recommendations', 'lb-diary', 'lb-watchlist', 'lb-friends'];
+  const defaultOrder = ['lb-recommendations', 'lb-diary', 'lb-watched', 'lb-watchlist', 'lb-friends'];
   const customListIds = config.catalogs.customLists.map(l => `lb-list-${(typeof l === 'string' ? l : l.slug).replace(/\//g, '__')}`);
   const fullOrder = Array.from(new Set([...(config.catalogOrder || []), ...defaultOrder, ...customListIds]));
 
@@ -554,7 +566,7 @@ export default function ConfigPage() {
             <div className="logo-mark" style={{ background: 'transparent', boxShadow: 'none' }}><img src="/icon.png" alt="Logo" width={40} height={40} style={{ borderRadius: '10px' }} /></div>
             <span className="logo-name" style={{ marginRight: '8px' }}>Multiboxd</span>
             <span style={{ fontSize: '13px', color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, background: 'var(--surface-2)', padding: '4px 8px', borderRadius: '12px', border: '1px solid var(--border)' }}>
-              v0.3.0
+              v0.3.1
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--green)', boxShadow: '0 0 8px var(--green)' }}></span>
             </span>
           </div>
