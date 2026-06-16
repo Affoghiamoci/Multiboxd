@@ -53,7 +53,8 @@ const TRANSLATIONS = {
     subRecommended: 'Films recommended based on your taste',
     subDiary: 'Your recently watched films',
     subWatchlist: 'Films you want to watch',
-    subFriends: 'Recently watched by your friends'
+    subFriends: 'Recently watched by your friends',
+    voteText: 'Support me with a vote'
   },
   it: {
     sub: 'Aggiungi i cataloghi Letterboxd direttamente su Stremio.',
@@ -103,7 +104,8 @@ const TRANSLATIONS = {
     subRecommended: 'Film consigliati in base ai tuoi gusti',
     subDiary: 'I tuoi film visti di recente',
     subWatchlist: 'Film che vuoi vedere',
-    subFriends: 'Visti di recente dai tuoi amici'
+    subFriends: 'Visti di recente dai tuoi amici',
+    voteText: 'Supportami con un voto'
   }
 };
 
@@ -807,7 +809,7 @@ export default function ConfigPage() {
         </div>
 
         {/* ── Donation Button ── */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '24px', flexWrap: 'wrap' }}>
           <a
             href="https://ko-fi.com/affogo"
             target="_blank"
@@ -826,6 +828,25 @@ export default function ConfigPage() {
           >
             <span>☕</span>
             <span>{t.support}</span>
+          </a>
+          <a
+            href="https://stremio-addons.net/addons/multiboxd"
+            target="_blank"
+            rel="noreferrer"
+            className="btn"
+            style={{
+              backgroundColor: '#8a5aeb',
+              color: '#ffffff',
+              boxShadow: '0 4px 12px rgba(138, 90, 235, 0.25)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 20px',
+              fontWeight: 600,
+            }}
+          >
+            <span>⭐</span>
+            <span>{t.voteText}</span>
           </a>
         </div>
 
