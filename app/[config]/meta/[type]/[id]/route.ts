@@ -31,7 +31,7 @@ export async function GET(
     return NextResponse.json({ meta: null }, { headers: CORS });
   }
 
-  const meta = await getMeta(id, type, config.tmdbKey ?? '', config.language ?? 'it-IT');
+  const meta = await getMeta(id, type, config.tmdbKey ?? '', config.language ?? 'it-IT', config.rpdbKey, config.rpdbStyle, config.rpdbProvider);
 
   if (!meta) {
     return NextResponse.json({ meta: null }, { headers: CORS });

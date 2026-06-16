@@ -20,6 +20,9 @@ export interface CatalogConfig {
 
 export interface AddonConfig {
   tmdbKey?: string;
+  rpdbKey?: string;
+  rpdbStyle?: string;
+  rpdbProvider?: string;
   language?: string;
   catalogPrefix?: string;
   hideAddonName?: boolean;
@@ -36,6 +39,9 @@ export interface AddonConfig {
 
 const DEFAULT_CONFIG: AddonConfig = {
   tmdbKey: '',
+  rpdbKey: '',
+  rpdbStyle: 'poster-default',
+  rpdbProvider: 'rpdb',
   language: 'it-IT',
   catalogs: {
     friendsActivity: false,

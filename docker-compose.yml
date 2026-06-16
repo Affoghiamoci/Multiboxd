@@ -1,0 +1,7 @@
+services:
+  multiboxd:
+    build: .
+    container_name: multiboxd
+    ports:
+      - "11463:11463"
+    restart: unless-stopped

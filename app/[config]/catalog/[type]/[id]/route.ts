@@ -163,16 +163,24 @@ export async function GET(
       releaseInfo: f.year,
     }));
 
-    if (config.tmdbKey) {
+    if (config.tmdbKey || config.rpdbKey) {
       await Promise.all(metas.map(async (m) => {
         try {
-          const tmdbData = await findByImdb(m.id, config.tmdbKey!, config.language || 'it-IT');
-          if (tmdbData?.posterPath) {
-            const url = posterUrl(tmdbData.posterPath, 'w500');
-            if (url) m.poster = url;
+          if (config.rpdbKey) {
+            const style = config.rpdbStyle || 'poster-default';
+            const domain = config.rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
+            m.poster = `${domain}/${config.rpdbKey}/imdb/${style}/${m.id}.jpg`;
           }
-          if (tmdbData?.title) {
-            m.name = tmdbData.title;
+
+          if (config.tmdbKey) {
+            const tmdbData = await findByImdb(m.id, config.tmdbKey, config.language || 'it-IT');
+            if (!config.rpdbKey && tmdbData?.posterPath) {
+              const url = posterUrl(tmdbData.posterPath, 'w500');
+              if (url) m.poster = url;
+            }
+            if (tmdbData?.title) {
+              m.name = tmdbData.title;
+            }
           }
         } catch {
           // Ignora errori e usa Metahub fallback

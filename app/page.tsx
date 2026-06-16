@@ -41,12 +41,14 @@ const TRANSLATIONS = {
     faq1a: 'Multiboxd is a Stremio add-on that allows you to integrate your Letterboxd catalogs directly into the application. You can sync your public Watchlist, Diary, Recommended films based on your taste, friends\' activity, and add custom public lists.',
     faq2q: 'How does it differ from other similar add-ons?',
     faq2a: 'Unlike other add-on configurations, Multiboxd does not provide its own metadata (such as descriptions, cast, trailers, etc.). Instead, it relies on the metadata already available in Stremio. This makes it lightweight and fully compatible with other metadata and playback add-ons you have installed, preventing duplicates or conflicts.',
-    faq3q: 'How does the Recommended catalog work?',
-    faq3a: 'The add-on fetches your Letterboxd Diary history (specifically the first page), filters and selects your highest-rated films (assigning weights to each rating), and queries the TMDB API for similar films. These suggestions are then aggregated and sorted to deliver a highly personalized feed.',
+    faq3q: 'Why are descriptions or details missing in "Show All"?',
+    faq3a: 'By design, the add-on does not provide movie metadata to avoid conflicting with other add-ons. Descriptions, trailers, and other details in the catalog view are loaded automatically by Stremio from your other installed metadata add-ons (such as Cinematica or Stremio\'s default metadata).',
     faq4q: 'Why do I need a TMDB API Key?',
     faq4a: 'The TMDB (The Movie Database) API Key is optional but recommended. Because of how Stremio works, we do not fetch or store any core metadata ourselves. The TMDB key is used strictly to retrieve localized posters and titles (e.g. in Italian) in the catalog grid and is required to calculate recommendations (which are computed via TMDB services). It does not affect media playback or core metadata.',
-    faq5q: 'Why are descriptions or details missing in "Show All"?',
-    faq5a: 'By design, the add-on does not provide movie metadata to avoid conflicting with other add-ons. Descriptions, trailers, and other details in the catalog view are loaded automatically by Stremio from your other installed metadata add-ons (such as Cinematica or Stremio\'s default metadata).',
+    faq5q: 'How does the Recommended catalog work?',
+    faq5a: 'The add-on fetches your Letterboxd Diary history (specifically the first page), filters and selects your highest-rated films (assigning weights to each rating), and queries the TMDB API for similar films. These suggestions are then aggregated and sorted to deliver a highly personalized feed.',
+    faq6q: 'What are RPDB and OpenPosterDB, and where do I get the API Key?',
+    faq6a: 'They are services that add ratings (like Letterboxd or IMDb) directly onto movie posters. OpenPosterDB is a free open-source alternative to RPDB. You can test RPDB by entering the public free key "t0-free-rpdb". However, since it is a shared key used by thousands of people, it might be slow. For a smooth experience and to customize the visual style, we recommend getting your own personal key from RPDB\'s Patreon or registering for a free key on OpenPosterDB.',
     support: 'Support me on Ko-fi',
     footer: 'Developed with ♥ for the Stremio community',
     connectedAs: 'Connected as',
@@ -54,7 +56,16 @@ const TRANSLATIONS = {
     subDiary: 'Your recently watched films',
     subWatchlist: 'Films you want to watch',
     subFriends: 'Recently watched by your friends',
-    voteText: 'Support me with a vote'
+    voteText: 'Support me with a vote',
+    rpdbTitle: 'Ratings on Posters',
+    rpdbDesc: 'Enter your RPDB or OpenPosterDB API Key to enable posters with Letterboxd/IMDb ratings.',
+    rpdbKeyLabel: 'API Key',
+    rpdbProviderLabel: 'Provider',
+    rpdbStyleLabel: 'Poster Style',
+    rpdbStyleDefault: 'Default (Title & Ratings)',
+    rpdbStyleTextless: 'Textless (Ratings only, no Title)',
+    getRpdb: 'Get your RPDB API key here',
+    getOpdb: 'Get your OPDB API key here'
   },
   it: {
     sub: 'Aggiungi i cataloghi Letterboxd direttamente su Stremio.',
@@ -92,12 +103,14 @@ const TRANSLATIONS = {
     faq1a: 'Multiboxd è un add-on per Stremio che ti permette di integrare i tuoi cataloghi Letterboxd direttamente nell\'applicazione. Puoi sincronizzare le tue Watchlist, il Diary, i film Consigliati in base ai tuoi gusti, le attività degli amici e aggiungere liste pubbliche personalizzate.',
     faq2q: 'Cosa lo differenzia da altri add-on simili?',
     faq2a: 'A differenza di altre configurazioni, Multiboxd non fornisce metadati propri (come descrizioni, cast, trailer, ecc.). Si appoggia invece a quelli già disponibili su Stremio. Questo lo rende molto leggero e totalmente compatibile con gli altri add-on che hai già installato, evitando fastidiosi duplicati o conflitti.',
-    faq3q: 'Come funziona il catalogo dei Film Consigliati?',
-    faq3a: 'L\'add-on analizza la cronologia del tuo Diary (nello specifico la prima pagina), filtra e seleziona i film a cui hai dato il voto più alto (assegnando pesi a ciascun voto) e interroga l\'API di TMDB per trovare titoli simili. Questi suggerimenti vengono poi aggregati e ordinati per offrirti un feed personalizzato.',
+    faq3q: 'Perché mancano le descrizioni o i dettagli in "Mostra Tutti"?',
+    faq3a: 'L\'add-on non fornisce intenzionalmente i metadati dei film. Le descrizioni, i trailer e gli altri dettagli nella vista catalogo vengono caricati in automatico da Stremio e dagli altri add-on di metadati installati (come Cinematica o i metadati di default di Stremio).',
     faq4q: 'Perché mi serve una TMDB API Key?',
     faq4a: 'La TMDB API Key è opzionale ma fortemente raccomandata. La chiave viene usata strettamente per scaricare locandine e titoli localizzati (es. in italiano) nel grid del catalogo e per calcolare i film consigliati (che passano tramite i servizi di TMDB). Non influisce né sulla riproduzione né sui metadati principali.',
-    faq5q: 'Perché mancano le descrizioni o i dettagli in "Mostra Tutti"?',
-    faq5a: 'L\'add-on non fornisce intenzionalmente i metadati dei film. Le descrizioni, i trailer e gli altri dettagli nella vista catalogo vengono caricati in automatico da Stremio e dagli altri add-on di metadati installati (come Cinematica o i metadati di default di Stremio).',
+    faq5q: 'Come funziona il catalogo dei Film Consigliati?',
+    faq5a: 'L\'add-on analizza la cronologia del tuo Diary (nello specifico la prima pagina), filtra e seleziona i film a cui hai dato il voto più alto (assegnando pesi a ciascun voto) e interroga l\'API di TMDB per trovare titoli simili. Questi suggerimenti vengono poi aggregati e ordinati per offrirti un feed personalizzato.',
+    faq6q: 'Cosa sono RPDB e OpenPosterDB e dove trovo la API Key?',
+    faq6a: 'Sono servizi che aggiungono i voti (come quelli di Letterboxd o IMDb) stampati direttamente sulle locandine. OpenPosterDB è l\'alternativa gratuita e open-source a RPDB. Puoi testare RPDB inserendo la chiave pubblica "t0-free-rpdb". Tuttavia, essendo condivisa con migliaia di persone, potrebbe essere lenta. Per un\'esperienza fluida ti consigliamo di ottenere una tua API Key personale tramite il Patreon di RPDB o registrandoti gratuitamente su OpenPosterDB.',
     support: 'Supportami su Ko-fi',
     footer: 'Sviluppato con ♥ per la community di Stremio',
     connectedAs: 'Connesso come',
@@ -105,7 +118,16 @@ const TRANSLATIONS = {
     subDiary: 'I tuoi film visti di recente',
     subWatchlist: 'Film che vuoi vedere',
     subFriends: 'Visti di recente dai tuoi amici',
-    voteText: 'Supportami con un voto'
+    voteText: 'Supportami con un voto',
+    rpdbTitle: 'Voti sulle locandine',
+    rpdbDesc: 'Inserisci la tua API Key di RPDB o OpenPosterDB per abilitare locandine con i voti.',
+    rpdbKeyLabel: 'API Key',
+    rpdbProviderLabel: 'Provider',
+    rpdbStyleLabel: 'Stile Locandine',
+    rpdbStyleDefault: 'Default (Titolo e Voti)',
+    rpdbStyleTextless: 'Textless (Solo Voti, senza Titolo)',
+    getRpdb: 'Ottieni la tua API key RPDB qui',
+    getOpdb: 'Ottieni la tua API key OPDB qui'
   }
 };
 
@@ -257,10 +279,13 @@ export default function ConfigPage() {
   const [lbInput, setLbInput] = useState('');
   const [lbConnected, setLbConnected] = useState(false);
 
-  // TMDB
+  // TMDB & RPDB
   const [showKey, setShowKey] = useState(false);
+  const [showRpdbKey, setShowRpdbKey] = useState(false);
   const [validating, setValidating] = useState(false);
   const [tmdbStatus, setTmdbStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [rpdbValidating, setRpdbValidating] = useState(false);
+  const [rpdbStatus, setRpdbStatus] = useState<'idle' | 'ok' | 'err'>('idle');
 
   // Custom list input
   const [listInput, setListInput] = useState('');
@@ -329,6 +354,26 @@ export default function ConfigPage() {
       setTmdbStatus('err');
     }
     setValidating(false);
+  }
+
+  function validateRpdb() {
+    if (!config.rpdbKey) return;
+    setRpdbValidating(true);
+    setRpdbStatus('idle');
+    
+    const domain = config.rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
+    const testUrl = `${domain}/${config.rpdbKey}/imdb/poster-default/tt0111161.jpg`;
+
+    const img = new Image();
+    img.onload = () => {
+      setRpdbStatus('ok');
+      setRpdbValidating(false);
+    };
+    img.onerror = () => {
+      setRpdbStatus('err');
+      setRpdbValidating(false);
+    };
+    img.src = testUrl;
   }
 
   function connectLb() {
@@ -509,7 +554,7 @@ export default function ConfigPage() {
             <div className="logo-mark" style={{ background: 'transparent', boxShadow: 'none' }}><img src="/icon.png" alt="Logo" width={40} height={40} style={{ borderRadius: '10px' }} /></div>
             <span className="logo-name" style={{ marginRight: '8px' }}>Multiboxd</span>
             <span style={{ fontSize: '13px', color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, background: 'var(--surface-2)', padding: '4px 8px', borderRadius: '12px', border: '1px solid var(--border)' }}>
-              v0.2.2
+              v0.3.0
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--green)', boxShadow: '0 0 8px var(--green)' }}></span>
             </span>
           </div>
@@ -525,7 +570,7 @@ export default function ConfigPage() {
           <div className="card-head">
             <div className="card-icon">👤</div>
             <span className="card-title">{t.lbProfile}</span>
-            </div>
+          </div>
           <div className="card-body">
             <p className="card-desc">
               {t.lbDesc}
@@ -612,6 +657,77 @@ export default function ConfigPage() {
                 </select>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* ── RPDB ── */}
+        <div className="card">
+          <div className="card-head">
+            <div className="card-icon">⭐</div>
+            <span className="card-title">{t.rpdbTitle}</span>
+            <span className="card-badge">Optional</span>
+          </div>
+          <div className="card-body">
+            <p className="card-desc">{t.rpdbDesc}</p>
+
+            <div className="field">
+              <label className="label" htmlFor="rpdb-provider">{t.rpdbProviderLabel}</label>
+              <select
+                id="rpdb-provider"
+                className="select"
+                value={config.rpdbProvider || 'rpdb'}
+                onChange={e => { update('rpdbProvider', e.target.value); setRpdbStatus('idle'); }}
+              >
+                <option value="rpdb">RPDB</option>
+                <option value="opdb">OpenPosterDB</option>
+              </select>
+            </div>
+
+            <div className="field">
+              <label className="label" htmlFor="rpdb-key">{t.rpdbKeyLabel}</label>
+              <div className="input-row">
+                <div className="input-with-icon">
+                  <input
+                    id="rpdb-key"
+                    className="input input-has-icon"
+                    type={showRpdbKey ? 'text' : 'password'}
+                    placeholder="e.g. t1-xyz..."
+                    value={config.rpdbKey || ''}
+                    onChange={e => { update('rpdbKey', e.target.value); setRpdbStatus('idle'); }}
+                  />
+                  <button className="input-icon-btn" onClick={() => setShowRpdbKey(v => !v)} title="Toggle visibility" type="button">
+                    {showRpdbKey ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                <button className="btn btn-primary btn-sm" onClick={validateRpdb} disabled={!config.rpdbKey || rpdbValidating}>
+                  {rpdbValidating ? '…' : t.verify}
+                </button>
+              </div>
+              {rpdbStatus === 'ok'  && <p className="status-ok">✓ {t.validKey}</p>}
+              {rpdbStatus === 'err' && <p className="status-err">✗ {t.invalidKey}</p>}
+              <p className="input-hint">
+                <a 
+                  href={config.rpdbProvider === 'opdb' ? "https://openposterdb.com" : "https://ratingposterdb.com/"} 
+                  target="_blank" 
+                  rel="noreferrer"
+                >
+                  {config.rpdbProvider === 'opdb' ? t.getOpdb : t.getRpdb}
+                </a>.
+              </p>
+            </div>
+
+            <div className="field">
+              <label className="label" htmlFor="rpdb-style">{t.rpdbStyleLabel}</label>
+              <select
+                id="rpdb-style"
+                className="select"
+                value={config.rpdbStyle || 'poster-default'}
+                onChange={e => update('rpdbStyle', e.target.value)}
+              >
+                <option value="poster-default">{t.rpdbStyleDefault}</option>
+                <option value="poster-textless">{t.rpdbStyleTextless}</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -806,6 +922,18 @@ export default function ConfigPage() {
               {t.faq5a}
             </div>
           </div>
+
+          <div className={`faq-item ${openFaq === 'q6' ? 'open' : ''}`}>
+            <button className="faq-q" onClick={() => toggleFaq('q6')}>
+              <span>{t.faq6q}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className="faq-a">
+              {t.faq6a}
+            </div>
+          </div>
         </div>
 
         {/* ── Donation Button ── */}
@@ -821,6 +949,9 @@ export default function ConfigPage() {
               boxShadow: '0 4px 12px rgba(255, 94, 91, 0.25)',
               display: 'inline-flex',
               alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              minWidth: '200px',
               gap: '8px',
               padding: '10px 20px',
               fontWeight: 600,
@@ -840,6 +971,9 @@ export default function ConfigPage() {
               boxShadow: '0 4px 12px rgba(138, 90, 235, 0.25)',
               display: 'inline-flex',
               alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              minWidth: '200px',
               gap: '8px',
               padding: '10px 20px',
               fontWeight: 600,

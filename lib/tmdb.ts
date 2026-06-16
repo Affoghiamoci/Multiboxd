@@ -279,18 +279,28 @@ export async function getMeta(
   imdbId: string,
   type: string,
   apiKey: string,
-  language: string
+  language: string,
+  rpdbKey?: string,
+  rpdbStyle?: string,
+  rpdbProvider?: string
 ): Promise<StremioMeta | null> {
+  let meta: StremioMeta | null = null;
   if (type === 'movie') {
-    return getMovieMeta(imdbId, apiKey, language);
+    meta = await getMovieMeta(imdbId, apiKey, language);
+  } else if (type === 'series') {
+    meta = await getTvMeta(imdbId, apiKey, language);
+  } else {
+    // Fallback: prova entrambi
+    meta = await getMovieMeta(imdbId, apiKey, language);
+    if (!meta) meta = await getTvMeta(imdbId, apiKey, language);
   }
-  if (type === 'series') {
-    return getTvMeta(imdbId, apiKey, language);
+
+  if (meta && rpdbKey) {
+    const style = rpdbStyle || 'poster-default';
+    const domain = rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
+    meta.poster = `${domain}/${rpdbKey}/imdb/${style}/${imdbId}.jpg`;
   }
-  // Fallback: prova entrambi
-  const movie = await getMovieMeta(imdbId, apiKey, language);
-  if (movie) return movie;
-  return getTvMeta(imdbId, apiKey, language);
+  return meta;
 }
 
 /** Recupera le raccomandazioni in base a una lista di TMDB IDs e dei loro pesi (voti) */
