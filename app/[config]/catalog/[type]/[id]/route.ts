@@ -202,7 +202,7 @@ export async function GET(
       }));
     }
 
-    const maxAge = id === 'lb-watchlist' ? 900 : 43200;
+    const maxAge = id === 'lb-watchlist' ? 3600 : 43200;
     const staleWhileRevalidate = id === 'lb-watchlist' ? 3600 : 43200;
 
     return NextResponse.json(
