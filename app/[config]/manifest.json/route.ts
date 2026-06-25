@@ -5,6 +5,7 @@
 
 import { NextResponse } from 'next/server';
 import { decodeConfig, isConfigValid } from '@/lib/config';
+import { trackEvent } from '@/lib/tracker';
 
 export async function GET(
   req: Request,
@@ -12,6 +13,9 @@ export async function GET(
 ) {
   const { config: configStr } = await params;
   const config = decodeConfig(configStr);
+
+  // Track manifest request (fire-and-forget)
+  trackEvent('multiboxd', 'manifest_request', configStr);
 
   const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'multiboxd.fly.dev';
   const protocol = req.headers.get('x-forwarded-proto') || (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https');

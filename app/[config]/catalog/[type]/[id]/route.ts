@@ -18,6 +18,7 @@ import {
   LbFilm,
 } from '@/lib/letterboxd';
 import { findByImdb, posterUrl, getRecommendations } from '@/lib/tmdb';
+import { trackEvent } from '@/lib/tracker';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -47,6 +48,9 @@ export async function GET(
   if (!isConfigValid(config)) {
     return NextResponse.json({ metas: [] }, { headers: CORS });
   }
+
+  // Track this catalog request (fire-and-forget)
+  trackEvent('multiboxd', 'catalog_request', configStr);
 
   let films: LbFilm[] = [];
 

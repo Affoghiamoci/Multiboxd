@@ -51,6 +51,8 @@ const TRANSLATIONS = {
     faq6a: 'They are services that add ratings (like Letterboxd or IMDb) directly onto movie posters. OpenPosterDB is a free open-source alternative to RPDB. You can test RPDB by entering the public free key "t0-free-rpdb". However, since it is a shared key used by thousands of people, it might be slow. For a smooth experience and to customize the visual style, we recommend getting your own personal key from RPDB\'s Patreon or registering for a free key on OpenPosterDB.',
     faq7q: 'How often do the catalogs update?',
     faq7a: 'Your Watchlist updates approximately every hour. The Diary, Watched, Recommended films, Custom Lists, and Friends Activity catalogs update approximately every 12 hours.',
+    faq8q: 'What data does this addon collect?',
+    faq8a: 'This addon collects anonymous usage statistics (number of requests, addon name, timestamp) to monitor the service. No IP addresses, names, or personally identifiable data are stored.',
     support: 'Support me on Ko-fi',
     footer: 'Developed with ♥ for the Stremio community',
     connectedAs: 'Connected as',
@@ -116,6 +118,8 @@ const TRANSLATIONS = {
     faq6a: 'Sono servizi che aggiungono i voti (come quelli di Letterboxd o IMDb) stampati direttamente sulle locandine. OpenPosterDB è l\'alternativa gratuita e open-source a RPDB. Puoi testare RPDB inserendo la chiave pubblica "t0-free-rpdb". Tuttavia, essendo condivisa con migliaia di persone, potrebbe essere lenta. Per un\'esperienza fluida ti consigliamo di ottenere una tua API Key personale tramite il Patreon di RPDB o registrandoti gratuitamente su OpenPosterDB.',
     faq7q: 'Ogni quanto si aggiornano i cataloghi?',
     faq7a: 'La tua Watchlist si aggiorna circa ogni ora. Il Diary, i film Visti (Watched), i Consigliati, le Liste Personalizzate e il catalogo dell\'Attività degli Amici si aggiornano circa ogni 12 ore.',
+    faq8q: 'Quali dati raccoglie questo addon?',
+    faq8a: 'Questo addon raccoglie statistiche di utilizzo anonime (numero di richieste, addon usato, timestamp) per monitorare il funzionamento del servizio. Non vengono salvati IP, nomi o dati personali identificabili.',
     support: 'Supportami su Ko-fi',
     footer: 'Sviluppato con ♥ per la community di Stremio',
     connectedAs: 'Connesso come',
@@ -960,6 +964,17 @@ export default function ConfigPage() {
             </button>
             <div className="faq-a">
               {t.faq7a}
+            </div>
+          </div>
+          <div className={`faq-item ${openFaq === 'q8' ? 'open' : ''}`}>
+            <button className="faq-q" onClick={() => toggleFaq('q8')}>
+              <span>{t.faq8q}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className="faq-a">
+              {t.faq8a}
             </div>
           </div>
         </div>
