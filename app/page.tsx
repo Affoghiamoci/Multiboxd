@@ -41,14 +41,12 @@ const TRANSLATIONS = {
     faq1a: 'Multiboxd is a Stremio add-on that allows you to integrate your Letterboxd catalogs directly into the application. You can sync your public Watchlist, Diary, Recommended films based on your taste, friends\' activity, and add custom public lists.',
     faq2q: 'How does it differ from other similar add-ons?',
     faq2a: 'Unlike other add-on configurations, Multiboxd does not provide its own metadata (such as descriptions, cast, trailers, etc.). Instead, it relies on the metadata already available in Stremio. This makes it lightweight and fully compatible with other metadata and playback add-ons you have installed, preventing duplicates or conflicts.',
-    faq3q: 'Why are descriptions or details missing in "Show All"?',
-    faq3a: 'By design, the add-on does not provide movie metadata to avoid conflicting with other add-ons. Descriptions, trailers, and other details in the catalog view are loaded automatically by Stremio from your other installed metadata add-ons (such as Cinematica or Stremio\'s default metadata).',
+
     faq4q: 'Why do I need a TMDB API Key?',
     faq4a: 'The TMDB (The Movie Database) API Key is optional but recommended. Because of how Stremio works, we do not fetch or store any core metadata ourselves. The TMDB key is used strictly to retrieve localized posters and titles (e.g. in Italian) in the catalog grid and is required to calculate recommendations (which are computed via TMDB services). It does not affect media playback or core metadata.',
     faq5q: 'How does the Recommended catalog work?',
     faq5a: 'The add-on fetches your recently Watched films (specifically the first page) to find your recent highly-rated films. It queries the TMDB API for similar films, and then filters the results against your entire Watched list so you only get unseen recommendations.',
-    faq6q: 'What are RPDB and OpenPosterDB, and where do I get the API Key?',
-    faq6a: 'They are services that add ratings (like Letterboxd or IMDb) directly onto movie posters. OpenPosterDB is a free open-source alternative to RPDB. You can test RPDB by entering the public free key "t0-free-rpdb". However, since it is a shared key used by thousands of people, it might be slow. For a smooth experience and to customize the visual style, we recommend getting your own personal key from RPDB\'s Patreon or registering for a free key on OpenPosterDB.',
+
     faq7q: 'How often do the catalogs update?',
     faq7a: 'Your Watchlist updates approximately every hour. The Diary, Watched, Recommended films, Custom Lists, and Friends Activity catalogs update approximately every 12 hours.',
     faq8q: 'What data does this addon collect?',
@@ -108,14 +106,12 @@ const TRANSLATIONS = {
     faq1a: 'Multiboxd è un add-on per Stremio che ti permette di integrare i tuoi cataloghi Letterboxd direttamente nell\'applicazione. Puoi sincronizzare le tue Watchlist, il Diary, i film Consigliati in base ai tuoi gusti, le attività degli amici e aggiungere liste pubbliche personalizzate.',
     faq2q: 'Cosa lo differenzia da altri add-on simili?',
     faq2a: 'A differenza di altre configurazioni, Multiboxd non fornisce metadati propri (come descrizioni, cast, trailer, ecc.). Si appoggia invece a quelli già disponibili su Stremio. Questo lo rende molto leggero e totalmente compatibile con gli altri add-on che hai già installato, evitando fastidiosi duplicati o conflitti.',
-    faq3q: 'Perché mancano le descrizioni o i dettagli in "Mostra Tutti"?',
-    faq3a: 'L\'add-on non fornisce intenzionalmente i metadati dei film. Le descrizioni, i trailer e gli altri dettagli nella vista catalogo vengono caricati in automatico da Stremio e dagli altri add-on di metadati installati (come Cinematica o i metadati di default di Stremio).',
+
     faq4q: 'Perché mi serve una TMDB API Key?',
     faq4a: 'La TMDB API Key è opzionale ma fortemente raccomandata. La chiave viene usata strettamente per scaricare locandine e titoli localizzati (es. in italiano) nel grid del catalogo e per calcolare i film consigliati (che passano tramite i servizi di TMDB). Non influisce né sulla riproduzione né sui metadati principali.',
     faq5q: 'Come funziona il catalogo dei Film Consigliati?',
     faq5a: 'L\'add-on analizza la cronologia dei tuoi film Visti (nello specifico la prima pagina) per trovare i titoli recenti a cui hai dato il voto più alto. Interroga poi l\'API di TMDB per trovare film simili e filtra i risultati confrontandoli con tutta la tua lista dei film Visti (Watched), per suggerirti solo film che non hai ancora visto.',
-    faq6q: 'Cosa sono RPDB e OpenPosterDB e dove trovo la API Key?',
-    faq6a: 'Sono servizi che aggiungono i voti (come quelli di Letterboxd o IMDb) stampati direttamente sulle locandine. OpenPosterDB è l\'alternativa gratuita e open-source a RPDB. Puoi testare RPDB inserendo la chiave pubblica "t0-free-rpdb". Tuttavia, essendo condivisa con migliaia di persone, potrebbe essere lenta. Per un\'esperienza fluida ti consigliamo di ottenere una tua API Key personale tramite il Patreon di RPDB o registrandoti gratuitamente su OpenPosterDB.',
+
     faq7q: 'Ogni quanto si aggiornano i cataloghi?',
     faq7a: 'La tua Watchlist si aggiorna circa ogni ora. Il Diary, i film Visti (Watched), i Consigliati, le Liste Personalizzate e il catalogo dell\'Attività degli Amici si aggiornano circa ogni 12 ore.',
     faq8q: 'Quali dati raccoglie questo addon?',
@@ -907,17 +903,7 @@ export default function ConfigPage() {
             </div>
           </div>
 
-          <div className={`faq-item ${openFaq === 'q3' ? 'open' : ''}`}>
-            <button className="faq-q" onClick={() => toggleFaq('q3')}>
-              <span>{t.faq3q}</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
-            <div className="faq-a">
-              {t.faq3a}
-            </div>
-          </div>
+
 
           <div className={`faq-item ${openFaq === 'q4' ? 'open' : ''}`}>
             <button className="faq-q" onClick={() => toggleFaq('q4')}>
@@ -943,17 +929,7 @@ export default function ConfigPage() {
             </div>
           </div>
 
-          <div className={`faq-item ${openFaq === 'q6' ? 'open' : ''}`}>
-            <button className="faq-q" onClick={() => toggleFaq('q6')}>
-              <span>{t.faq6q}</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="faq-chevron">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
-            <div className="faq-a">
-              {t.faq6a}
-            </div>
-          </div>
+
 
           <div className={`faq-item ${openFaq === 'q7' ? 'open' : ''}`}>
             <button className="faq-q" onClick={() => toggleFaq('q7')}>
