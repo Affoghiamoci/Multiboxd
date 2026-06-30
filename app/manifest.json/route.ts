@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { version } from '../../../package.json';
 
 export async function GET(req: Request) {
   const host = req.headers.get('host') || 'multiboxd.fly.dev';
@@ -7,7 +8,7 @@ export async function GET(req: Request) {
 
   const manifest = {
     id: 'com.multiboxd',
-    version: '0.2.2',
+    version,
     name: 'Multiboxd',
     description: 'Sync your Letterboxd Watchlist, Diary, Friends Activity and custom lists directly into Stremio — no metadata provided, works alongside your existing addons.',
     logo: `${origin}/icon.png`,
