@@ -68,7 +68,10 @@ const TRANSLATIONS = {
     rpdbStyleDefault: 'Default (Title & Ratings)',
     rpdbStyleTextless: 'Textless (Ratings only, no Title)',
     getRpdb: 'Get your RPDB API key here',
-    getOpdb: 'Get your OPDB API key here'
+    getOpdb: 'Get your OPDB API key here',
+    legacyBannerTitle: 'You are using an outdated link.',
+    legacyBannerBody: 'This address has limited resources and will be shut down in the coming weeks. Update your addon using the new official link:',
+    legacyBannerLink: 'multiboxd.affogo.fyi',
   },
   it: {
     sub: 'Aggiungi i cataloghi Letterboxd direttamente su Stremio.',
@@ -133,7 +136,10 @@ const TRANSLATIONS = {
     rpdbStyleDefault: 'Default (Titolo e Voti)',
     rpdbStyleTextless: 'Textless (Solo Voti, senza Titolo)',
     getRpdb: 'Ottieni la tua API key RPDB qui',
-    getOpdb: 'Ottieni la tua API key OPDB qui'
+    getOpdb: 'Ottieni la tua API key OPDB qui',
+    legacyBannerTitle: 'Stai usando un link obsoleto.',
+    legacyBannerBody: 'Questo indirizzo ha risorse limitate e verra\' reso inaccessibile nelle prossime settimane. Aggiorna il tuo addon usando il nuovo link ufficiale:',
+    legacyBannerLink: 'multiboxd.affogo.fyi',
   }
 };
 
@@ -589,14 +595,13 @@ export default function ConfigPage() {
         }}>
           <span style={{ fontSize: '20px', flexShrink: 0 }}>⚠️</span>
           <span style={{ flex: 1 }}>
-            <strong style={{ color: '#f87171' }}>Stai usando un link obsoleto.</strong>{' '}
-            Questo indirizzo ({window.location.hostname}) ha risorse limitate e verra' reso inaccessibile nelle prossime settimane.{' '}
-            Aggiorna il tuo addon usando il nuovo link ufficiale:{' '}
+            <strong style={{ color: '#f87171' }}>{t.legacyBannerTitle}</strong>{' '}
+            {t.legacyBannerBody}{' '}
             <a
               href="https://multiboxd.affogo.fyi/"
               style={{ color: '#f87171', fontWeight: 700, textDecoration: 'underline' }}
             >
-              multiboxd.affogo.fyi
+              {t.legacyBannerLink}
             </a>
           </span>
           <button
