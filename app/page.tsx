@@ -8,7 +8,7 @@ const TRANSLATIONS = {
   en: {
     sub: 'Add Letterboxd catalogs directly to Stremio.',
     lbProfile: 'Letterboxd Profile',
-    lbDesc: 'Enter your Letterboxd username to sync your public Watchlist, Diary and Friends Activity — no password needed.',
+    lbDesc: 'Enter your Letterboxd username to sync your public Watchlist, Diary and Friends Activity - no password needed.',
     connect: 'Connect',
     disconnect: 'Disconnect',
     tmdbTitle: 'TMDB',
@@ -27,10 +27,10 @@ const TRANSLATIONS = {
     globalSettings: 'Global Settings',
     prefixLabel: 'Catalog Name Prefix',
     prefixHint1: 'Catalogs will appear as',
-    prefixHint2: '— Watchlist etc.',
+    prefixHint2: '- Watchlist etc.',
     hideAddonName: 'Hide Addon Name',
     hideHyphen: 'Hide Hyphen',
-    installTitle: 'Addon URL — ready to install',
+    installTitle: 'Addon URL - ready to install',
     installPlaceholder: 'Configure at least one catalog to generate the URL…',
     installStremio: 'Install in Stremio',
     installWeb: 'Stremio Web',
@@ -73,7 +73,7 @@ const TRANSLATIONS = {
   it: {
     sub: 'Aggiungi i cataloghi Letterboxd direttamente su Stremio.',
     lbProfile: 'Profilo Letterboxd',
-    lbDesc: 'Inserisci il tuo username Letterboxd per sincronizzare Watchlist, Diary e attività degli amici — nessuna password necessaria.',
+    lbDesc: 'Inserisci il tuo username Letterboxd per sincronizzare Watchlist, Diary e attività degli amici - nessuna password necessaria.',
     connect: 'Connetti',
     disconnect: 'Disconnetti',
     tmdbTitle: 'TMDB',
@@ -92,10 +92,10 @@ const TRANSLATIONS = {
     globalSettings: 'Impostazioni Globali',
     prefixLabel: 'Prefisso Nome Catalogo',
     prefixHint1: 'I cataloghi appariranno come',
-    prefixHint2: '— Watchlist ecc.',
+    prefixHint2: '- Watchlist ecc.',
     hideAddonName: 'Nascondi Nome Addon',
     hideHyphen: 'Nascondi Trattino',
-    installTitle: 'URL Addon — pronto per l\'installazione',
+    installTitle: 'URL Addon - pronto per l\'installazione',
     installPlaceholder: 'Configura almeno un catalogo per generare l\'URL…',
     installStremio: 'Installa in Stremio',
     installWeb: 'Stremio Web',
@@ -281,6 +281,8 @@ export default function ConfigPage() {
   const [config, setConfig] = useState<AddonConfig>(DEFAULT_CONFIG);
   const [encodedUrl, setEncodedUrl] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isLegacyHost, setIsLegacyHost] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   // Letterboxd
   const [lbInput, setLbInput] = useState('');
@@ -324,6 +326,13 @@ export default function ConfigPage() {
           console.error('Failed to restore config:', e);
         }
       }
+    }
+  }, []);
+
+  // ── Legacy host detection ──
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsLegacyHost(window.location.hostname === 'multiboxd-red.vercel.app');
     }
   }, []);
 
@@ -562,6 +571,51 @@ export default function ConfigPage() {
 
   return (
     <div className="page">
+      {/* ── Legacy host warning banner ── */}
+      {isLegacyHost && !bannerDismissed && (
+        <div style={{
+          background: 'rgba(220, 38, 38, 0.12)',
+          borderBottom: '1px solid rgba(220, 38, 38, 0.35)',
+          padding: '14px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          fontSize: '14px',
+          color: '#fca5a5',
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          backdropFilter: 'blur(8px)',
+        }}>
+          <span style={{ fontSize: '20px', flexShrink: 0 }}>⚠️</span>
+          <span style={{ flex: 1 }}>
+            <strong style={{ color: '#f87171' }}>Stai usando un link obsoleto.</strong>{' '}
+            Questo indirizzo ({window.location.hostname}) ha risorse limitate e verra' reso inaccessibile nelle prossime settimane.{' '}
+            Aggiorna il tuo addon usando il nuovo link ufficiale:{' '}
+            <a
+              href="https://multiboxd.affogo.fyi/"
+              style={{ color: '#f87171', fontWeight: 700, textDecoration: 'underline' }}
+            >
+              multiboxd.affogo.fyi
+            </a>
+          </span>
+          <button
+            onClick={() => setBannerDismissed(true)}
+            style={{
+              background: 'none',
+              border: '1px solid rgba(220, 38, 38, 0.4)',
+              borderRadius: '6px',
+              color: '#f87171',
+              cursor: 'pointer',
+              padding: '4px 10px',
+              fontSize: '13px',
+              flexShrink: 0,
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
       <div className="container">
 
         {/* ── Header ── */}
