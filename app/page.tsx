@@ -72,6 +72,8 @@ const TRANSLATIONS = {
     legacyBannerTitle: 'You are using an outdated link.',
     legacyBannerBody: 'This address has limited resources and will be shut down in the coming weeks. Update your addon using the new official link:',
     legacyBannerLink: 'multiboxd.affogo.fyi',
+    moreFrom: 'More from this developer',
+    cagelogDesc: 'Create custom Stremio catalogs for your favorite actors, directors, genres, and cinematic sagas.',
   },
   it: {
     sub: 'Aggiungi i cataloghi Letterboxd direttamente su Stremio.',
@@ -140,6 +142,8 @@ const TRANSLATIONS = {
     legacyBannerTitle: 'Stai usando un link obsoleto.',
     legacyBannerBody: 'Questo indirizzo ha risorse limitate e verra\' reso inaccessibile nelle prossime settimane. Aggiorna il tuo addon usando il nuovo link ufficiale:',
     legacyBannerLink: 'multiboxd.affogo.fyi',
+    moreFrom: 'Altro da questo sviluppatore',
+    cagelogDesc: 'Crea cataloghi Stremio personalizzati per i tuoi attori, registi, generi e saghe cinematografiche preferite.',
   }
 };
 
@@ -1059,6 +1063,40 @@ export default function ConfigPage() {
           >
             <span>⭐</span>
             <span>{t.voteText}</span>
+          </a>
+        </div>
+
+        <div style={{ marginTop: '40px', padding: '24px', backgroundColor: 'var(--surface-2)', borderRadius: '16px', border: '1px solid var(--surface-3)', textAlign: 'center' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-1)', marginBottom: '16px' }}>{t.moreFrom}</h3>
+          <a
+            href="https://cagelog.affogo.fyi/"
+            target="_blank"
+            rel="noreferrer"
+            style={{ 
+              display: 'block', 
+              textDecoration: 'none', 
+              backgroundColor: 'var(--surface-3)', 
+              borderRadius: '12px', 
+              padding: '20px', 
+              transition: 'all 0.2s ease',
+              border: '1px solid transparent'
+            }}
+            onMouseEnter={(e) => { 
+              e.currentTarget.style.transform = 'translateY(-2px)'; 
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.2)'; 
+              e.currentTarget.style.borderColor = 'var(--text-3)';
+            }}
+            onMouseLeave={(e) => { 
+              e.currentTarget.style.transform = 'none'; 
+              e.currentTarget.style.boxShadow = 'none'; 
+              e.currentTarget.style.borderColor = 'transparent';
+            }}
+          >
+            <div style={{ marginBottom: '12px' }}>
+              <img src="/cagelog.png" alt="Cagelog" style={{ width: '48px', height: '48px', borderRadius: '12px' }} />
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-1)', marginBottom: '6px' }}>Cagelog</div>
+            <div style={{ fontSize: '14px', color: 'var(--text-2)', lineHeight: '1.4' }}>{t.cagelogDesc}</div>
           </a>
         </div>
 
