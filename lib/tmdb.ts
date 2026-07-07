@@ -131,9 +131,9 @@ export async function findByImdb(
   imdbId: string,
   apiKey: string,
   language: string
-): Promise<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string } | null> {
+): Promise<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string; description?: string; backgroundPath?: string } | null> {
   const cacheKey = `find:${imdbId}:${language}`;
-  const cached = cache.get<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string }>(cacheKey);
+  const cached = cache.get<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string; description?: string; backgroundPath?: string }>(cacheKey);
   if (cached) return cached;
 
   const url = `${TMDB_BASE}/find/${imdbId}?api_key=${apiKey}&language=${language}&external_source=imdb_id`;
@@ -142,20 +142,24 @@ export async function findByImdb(
     if (!res.ok) return null;
     const data = await res.json();
 
-    let result: { tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string } | null = null;
+    let result: { tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string; description?: string; backgroundPath?: string } | null = null;
     if (data.movie_results?.length > 0) {
       result = { 
         tmdbId: data.movie_results[0].id, 
         type: 'movie', 
         posterPath: data.movie_results[0].poster_path,
-        title: data.movie_results[0].title
+        title: data.movie_results[0].title,
+        description: data.movie_results[0].overview,
+        backgroundPath: data.movie_results[0].backdrop_path
       };
     } else if (data.tv_results?.length > 0) {
       result = { 
         tmdbId: data.tv_results[0].id, 
         type: 'series', 
         posterPath: data.tv_results[0].poster_path,
-        title: data.tv_results[0].name
+        title: data.tv_results[0].name,
+        description: data.tv_results[0].overview,
+        backgroundPath: data.tv_results[0].backdrop_path
       };
     }
     if (result) cache.set(cacheKey, result, 86400);

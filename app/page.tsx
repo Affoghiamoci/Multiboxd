@@ -11,13 +11,18 @@ const TRANSLATIONS = {
     lbDesc: 'Enter your Letterboxd username to sync your public Watchlist, Diary and Friends Activity - no password needed.',
     connect: 'Connect',
     disconnect: 'Disconnect',
-    tmdbTitle: 'TMDB',
-    tmdbDesc: 'Provide a free TMDB API Key to enable localized posters and titles (e.g. in Italian) and unlock the Recommended catalog. This key is used strictly for posters, titles and recommendations, not for core metadata.',
-    tmdbKeyLabel: 'TMDB API Key',
+    experimentalBadge: 'Experimental',
+    stremioTitle: 'Stremio Account',
+    stremioDesc: 'Optionally connect your Stremio account to automatically add your public Watchlist titles to your Stremio Library. Your password is used once to obtain a session key from Stremio and is never stored or logged — it lives only inside your install URL, exactly like your Stremio app already stores it. Only additions are made: nothing is ever removed from your Library.',
+    stremioEmailPlaceholder: 'Email',
+    stremioPasswordPlaceholder: 'Password',
+    syncToggleLabel: 'Auto-sync Watchlist to Stremio Library',
+    syncToggleDesc: 'New Watchlist titles are added to your Library the next time Stremio refreshes this catalog. Public Watchlists only.',
+    stremioNeedsLbHint: 'Connect your Letterboxd profile above first.',
+    syncNeedsWatchlistCatalog: 'Sync only runs when the Watchlist catalog below is enabled — turn it on too.',
     verify: 'Verify',
     validKey: 'Valid API Key',
     invalidKey: 'Invalid API Key',
-    getKey: 'Get your free API key here',
     posterLang: 'Poster Language',
     catalogsTitle: 'Your Catalogs',
     emptyCatalogs: 'Connect your Letterboxd profile above to sync your Watchlist, Diary and Friends Activity.',
@@ -42,8 +47,8 @@ const TRANSLATIONS = {
     faq2q: 'How does it differ from other similar add-ons?',
     faq2a: 'Unlike other add-on configurations, Multiboxd does not provide its own metadata (such as descriptions, cast, trailers, etc.). Instead, it relies on the metadata already available in Stremio. This makes it lightweight and fully compatible with other metadata and playback add-ons you have installed, preventing duplicates or conflicts.',
 
-    faq4q: 'Why do I need a TMDB API Key?',
-    faq4a: 'The TMDB (The Movie Database) API Key is optional but recommended. Because of how Stremio works, we do not fetch or store any core metadata ourselves. The TMDB key is used strictly to retrieve localized posters and titles (e.g. in Italian) in the catalog grid and is required to calculate recommendations (which are computed via TMDB services). It does not affect media playback or core metadata.',
+    faq4q: 'Do I need a TMDB API Key?',
+    faq4a: 'No. Localized posters and titles in the catalog grid, and the Recommended catalog, are powered by TMDB automatically — no key to enter. It does not affect media playback or core metadata, which always comes from your other installed addons.',
     faq5q: 'How does the Recommended catalog work?',
     faq5a: 'The add-on fetches your recently Watched films (specifically the first page) to find your recent highly-rated films. It queries the TMDB API for similar films, and then filters the results against your entire Watched list so you only get unseen recommendations.',
 
@@ -81,13 +86,18 @@ const TRANSLATIONS = {
     lbDesc: 'Inserisci il tuo username Letterboxd per sincronizzare Watchlist, Diary e attività degli amici - nessuna password necessaria.',
     connect: 'Connetti',
     disconnect: 'Disconnetti',
-    tmdbTitle: 'TMDB',
-    tmdbDesc: 'Inserisci una API Key gratuita di TMDB per abilitare locandine e titoli localizzati e sbloccare i Film Consigliati. La chiave viene usata solo per le immagini, i titoli nel catalogo e i consigli, non per i metadati principali.',
-    tmdbKeyLabel: 'TMDB API Key',
+    experimentalBadge: 'Sperimentale',
+    stremioTitle: 'Account Stremio',
+    stremioDesc: 'Collega facoltativamente il tuo account Stremio per aggiungere automaticamente i titoli della tua Watchlist pubblica alla Libreria Stremio. La password viene usata una sola volta per ottenere una chiave di sessione da Stremio e non viene mai salvata né loggata — vive solo dentro il tuo URL di installazione, esattamente come già fa l\'app Stremio. Vengono fatte solo aggiunte: nulla viene mai rimosso dalla tua Libreria.',
+    stremioEmailPlaceholder: 'Email',
+    stremioPasswordPlaceholder: 'Password',
+    syncToggleLabel: 'Sincronizza automaticamente la Watchlist nella Libreria Stremio',
+    syncToggleDesc: 'I nuovi titoli della Watchlist vengono aggiunti alla Libreria al prossimo aggiornamento di questo catalogo da parte di Stremio. Solo per Watchlist pubbliche.',
+    stremioNeedsLbHint: 'Connetti prima il tuo profilo Letterboxd qui sopra.',
+    syncNeedsWatchlistCatalog: 'La sync funziona solo se il catalogo Watchlist qui sotto è attivo — accendi anche quello.',
     verify: 'Verifica',
     validKey: 'API Key Valida',
     invalidKey: 'API Key Non Valida',
-    getKey: 'Ottieni la tua API key gratuita qui',
     posterLang: 'Lingua Locandine',
     catalogsTitle: 'I Tuoi Cataloghi',
     emptyCatalogs: 'Connetti il tuo profilo Letterboxd qui sopra per sincronizzare Watchlist, Diary e le attività degli amici.',
@@ -112,8 +122,8 @@ const TRANSLATIONS = {
     faq2q: 'Cosa lo differenzia da altri add-on simili?',
     faq2a: 'A differenza di altre configurazioni, Multiboxd non fornisce metadati propri (come descrizioni, cast, trailer, ecc.). Si appoggia invece a quelli già disponibili su Stremio. Questo lo rende molto leggero e totalmente compatibile con gli altri add-on che hai già installato, evitando fastidiosi duplicati o conflitti.',
 
-    faq4q: 'Perché mi serve una TMDB API Key?',
-    faq4a: 'La TMDB API Key è opzionale ma fortemente raccomandata. La chiave viene usata strettamente per scaricare locandine e titoli localizzati (es. in italiano) nel grid del catalogo e per calcolare i film consigliati (che passano tramite i servizi di TMDB). Non influisce né sulla riproduzione né sui metadati principali.',
+    faq4q: 'Mi serve una TMDB API Key?',
+    faq4a: 'No. Locandine e titoli localizzati nel grid del catalogo, e il catalogo dei Consigliati, sono già forniti automaticamente da TMDB — nessuna chiave da inserire. Non influisce né sulla riproduzione né sui metadati principali, che arrivano sempre dagli altri addon che hai installato.',
     faq5q: 'Come funziona il catalogo dei Film Consigliati?',
     faq5a: 'L\'add-on analizza la cronologia dei tuoi film Visti (nello specifico la prima pagina) per trovare i titoli recenti a cui hai dato il voto più alto. Interroga poi l\'API di TMDB per trovare film simili e filtra i risultati confrontandoli con tutta la tua lista dei film Visti (Watched), per suggerirti solo film che non hai ancora visto.',
 
@@ -148,7 +158,6 @@ const TRANSLATIONS = {
 };
 
 const DEFAULT_CONFIG: AddonConfig = {
-  tmdbKey: '',
   language: 'it-IT',
   catalogs: {
     friendsActivity: false,
@@ -298,11 +307,16 @@ export default function ConfigPage() {
   const [lbInput, setLbInput] = useState('');
   const [lbConnected, setLbConnected] = useState(false);
 
+  // Stremio
+  const [stremioEmail, setStremioEmail] = useState('');
+  const [stremioPassword, setStremioPassword] = useState('');
+  const [showStremioPassword, setShowStremioPassword] = useState(false);
+  const [stremioConnecting, setStremioConnecting] = useState(false);
+  const [stremioError, setStremioError] = useState('');
+  const stremioConnected = !!config.stremioAuthKey;
+
   // TMDB & RPDB
-  const [showKey, setShowKey] = useState(false);
   const [showRpdbKey, setShowRpdbKey] = useState(false);
-  const [validating, setValidating] = useState(false);
-  const [tmdbStatus, setTmdbStatus] = useState<'idle' | 'ok' | 'err'>('idle');
   const [rpdbValidating, setRpdbValidating] = useState(false);
   const [rpdbStatus, setRpdbStatus] = useState<'idle' | 'ok' | 'err'>('idle');
 
@@ -327,10 +341,8 @@ export default function ConfigPage() {
             setLbInput(restored.lbUsername);
             setLbConnected(true);
           }
-          if (restored.tmdbKey) {
-            fetch(`https://api.themoviedb.org/3/configuration?api_key=${restored.tmdbKey}`)
-              .then(res => setTmdbStatus(res.ok ? 'ok' : 'err'))
-              .catch(() => setTmdbStatus('err'));
+          if (restored.stremioEmail) {
+            setStremioEmail(restored.stremioEmail);
           }
         } catch (e) {
           console.error('Failed to restore config:', e);
@@ -369,19 +381,6 @@ export default function ConfigPage() {
   };
 
   // ── Handlers ────────────────────────────────────────────────────────────────
-  async function validateTmdb() {
-    if (!config.tmdbKey) return;
-    setValidating(true);
-    setTmdbStatus('idle');
-    try {
-      const res = await fetch(`https://api.themoviedb.org/3/configuration?api_key=${config.tmdbKey}`);
-      setTmdbStatus(res.ok ? 'ok' : 'err');
-    } catch {
-      setTmdbStatus('err');
-    }
-    setValidating(false);
-  }
-
   function validateRpdb() {
     if (!config.rpdbKey) return;
     setRpdbValidating(true);
@@ -416,6 +415,37 @@ export default function ConfigPage() {
     }));
     setLbConnected(false);
     setLbInput('');
+  }
+
+  async function connectStremio() {
+    if (!stremioEmail.trim() || !stremioPassword) return;
+    setStremioConnecting(true);
+    setStremioError('');
+    try {
+      const res = await fetch('/api/auth/stremio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: stremioEmail.trim(), password: stremioPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setStremioError(data.error || 'Login failed.');
+        return;
+      }
+      setConfig(prev => ({ ...prev, stremioAuthKey: data.authKey, stremioEmail: data.email }));
+      setStremioPassword('');
+    } catch {
+      setStremioError('Network error. Please try again.');
+    } finally {
+      setStremioConnecting(false);
+    }
+  }
+
+  function disconnectStremio() {
+    setConfig(prev => ({ ...prev, stremioAuthKey: undefined, stremioEmail: undefined, syncWatchlistEnabled: false }));
+    setStremioEmail('');
+    setStremioPassword('');
+    setStremioError('');
   }
 
   function addList() {
@@ -481,7 +511,6 @@ export default function ConfigPage() {
       onToggle: (v) => updateCatalog('recommendations', v),
       nameValue: config.recommendationsName || '',
       onNameChange: (v) => update('recommendationsName', v),
-      disabled: !config.tmdbKey,
     });
     itemsToRender.push({
       id: 'lb-diary',
@@ -633,7 +662,7 @@ export default function ConfigPage() {
             <div className="logo-mark" style={{ background: 'transparent', boxShadow: 'none' }}><img src="/icon.png" alt="Logo" width={40} height={40} style={{ borderRadius: '10px' }} /></div>
             <span className="logo-name" style={{ marginRight: '8px' }}>Multiboxd</span>
             <span style={{ fontSize: '13px', color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, background: 'var(--surface-2)', padding: '4px 8px', borderRadius: '12px', border: '1px solid var(--border)' }}>
-              v0.3.1
+              v0.5.0
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--green)', boxShadow: '0 0 8px var(--green)' }}></span>
             </span>
           </div>
@@ -679,63 +708,125 @@ export default function ConfigPage() {
           </div>
         </div>
 
-        {/* ── TMDB ── */}
+        {/* ── Stremio Account ── */}
+        <div className="card" style={!config.lbUsername ? { opacity: 0.4, pointerEvents: 'none' } : undefined}>
+            <div className="card-head">
+              <div className="card-icon">🔐</div>
+              <span className="card-title">{t.stremioTitle}</span>
+              <span className="card-badge card-badge-experimental">{t.experimentalBadge}</span>
+            </div>
+            <div className="card-body">
+              <p className="card-desc">{t.stremioDesc}</p>
+              {!config.lbUsername && <p className="input-hint">{t.stremioNeedsLbHint}</p>}
+
+              {!stremioConnected ? (
+                <>
+                  <div className="field">
+                    <input
+                      className="input"
+                      type="email"
+                      placeholder={t.stremioEmailPlaceholder}
+                      value={stremioEmail}
+                      onChange={e => { setStremioEmail(e.target.value); setStremioError(''); }}
+                      autoComplete="username"
+                    />
+                  </div>
+                  <div className="input-row">
+                    <div className="input-with-icon">
+                      <input
+                        className="input input-has-icon"
+                        type={showStremioPassword ? 'text' : 'password'}
+                        placeholder={t.stremioPasswordPlaceholder}
+                        value={stremioPassword}
+                        onChange={e => { setStremioPassword(e.target.value); setStremioError(''); }}
+                        onKeyDown={e => e.key === 'Enter' && connectStremio()}
+                        autoComplete="current-password"
+                      />
+                      <button className="input-icon-btn" onClick={() => setShowStremioPassword(v => !v)} title="Toggle visibility" type="button">
+                        {showStremioPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      </button>
+                    </div>
+                    <button className="btn btn-primary btn-sm" onClick={connectStremio} disabled={!stremioEmail.trim() || !stremioPassword || stremioConnecting}>
+                      {stremioConnecting ? '…' : t.connect}
+                    </button>
+                  </div>
+                  {stremioError && <p className="status-err">✗ {stremioError}</p>}
+                </>
+              ) : (
+                <>
+                  <div className="connected-pill">
+                    <div className="connected-pill-label">
+                      <span className="dot" />
+                      {t.connectedAs} <strong>{config.stremioEmail}</strong>
+                    </div>
+                    <button className="btn btn-danger btn-sm" onClick={disconnectStremio}>{t.disconnect}</button>
+                  </div>
+
+                  <div className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+                    <Toggle checked={!!config.syncWatchlistEnabled} onChange={v => update('syncWatchlistEnabled', v)} />
+                    <label className="label" style={{ margin: 0, cursor: 'pointer' }} onClick={() => update('syncWatchlistEnabled', !config.syncWatchlistEnabled)}>{t.syncToggleLabel}</label>
+                  </div>
+                  <p className="input-hint">{t.syncToggleDesc}</p>
+                  {config.syncWatchlistEnabled && !config.catalogs.watchlist && (
+                    <p className="status-err">⚠ {t.syncNeedsWatchlistCatalog}</p>
+                  )}
+                </>
+              )}
+            </div>
+        </div>
+
+        {/* ── Catalogs ── */}
         <div className="card">
           <div className="card-head">
-            <div className="card-icon">🔑</div>
-            <span className="card-title">{t.tmdbTitle}</span>
-            <span className="card-badge">Optional</span>
+            <div className="card-icon">📚</div>
+            <span className="card-title">{t.catalogsTitle}</span>
           </div>
           <div className="card-body">
-            <p className="card-desc">{t.tmdbDesc}</p>
-
-            <div className="field">
-              <label className="label" htmlFor="tmdb-key">{t.tmdbKeyLabel}</label>
-              <div className="input-row">
-                <div className="input-with-icon">
-                  <input
-                    id="tmdb-key"
-                    className="input input-has-icon"
-                    type={showKey ? 'text' : 'password'}
-                    placeholder="e.g. e9b6b55e1..."
-                    value={config.tmdbKey || ''}
-                    onChange={e => { update('tmdbKey', e.target.value); setTmdbStatus('idle'); }}
+            <div className="catalog-list">
+              {config.lbUsername || config.catalogs.customLists.length > 0 ? (
+                sortedItems.map((item, index) => (
+                  <CatalogItem
+                    key={item.id}
+                    title={item.title}
+                    subtitle={item.subtitle}
+                    enabled={item.enabled}
+                    onToggle={item.onToggle}
+                    nameValue={item.nameValue}
+                    onNameChange={item.onNameChange}
+                    onDelete={item.onDelete}
+                    disabled={item.disabled}
+                    onMoveUp={index > 0 ? () => moveItem(index, 'up') : undefined}
+                    onMoveDown={index < sortedItems.length - 1 ? () => moveItem(index, 'down') : undefined}
+                    shuffled={item.shuffled}
+                    onShuffleToggle={item.onShuffleToggle}
                   />
-                  <button className="input-icon-btn" onClick={() => setShowKey(v => !v)} title="Toggle visibility" type="button">
-                    {showKey ? <EyeOffIcon /> : <EyeIcon />}
-                  </button>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <div className="empty-state-icon">📋</div>
+                  <p className="empty-state-text">
+                    {t.emptyCatalogs}
+                  </p>
                 </div>
-                <button className="btn btn-primary btn-sm" onClick={validateTmdb} disabled={!config.tmdbKey || validating}>
-                  {validating ? '…' : t.verify}
-                </button>
-              </div>
-              {tmdbStatus === 'ok'  && <p className="status-ok">✓ {t.validKey}</p>}
-              {tmdbStatus === 'err' && <p className="status-err">✗ {t.invalidKey}</p>}
-              <p className="input-hint">
-                <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noreferrer">{t.getKey}</a>.
-              </p>
+              )}
             </div>
 
-            {config.tmdbKey && (
-              <div className="field">
-                <label className="label" htmlFor="language">{t.posterLang}</label>
-                <select
-                  id="language"
-                  className="select"
-                  value={config.language || 'it-IT'}
-                  onChange={e => update('language', e.target.value)}
-                >
-                  <option value="it-IT">🇮🇹 Italiano (it-IT)</option>
-                  <option value="en-US">🇺🇸 English (en-US)</option>
-                  <option value="es-ES">🇪🇸 Español (es-ES)</option>
-                  <option value="fr-FR">🇫🇷 Français (fr-FR)</option>
-                  <option value="de-DE">🇩🇪 Deutsch (de-DE)</option>
-                  <option value="pt-BR">🇧🇷 Português (pt-BR)</option>
-                  <option value="ja-JP">🇯🇵 日本語 (ja-JP)</option>
-                  <option value="ko-KR">🇰🇷 한국어 (ko-KR)</option>
-                </select>
+            <div className="divider" />
+
+            <div className="field">
+              <label className="label">{t.addCustomList}</label>
+              <div className="input-row">
+                <input
+                  className="input"
+                  type="text"
+                  placeholder={t.addListPlaceholder}
+                  value={listInput}
+                  onChange={e => setListInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && addList()}
+                />
+                <button className="btn btn-primary btn-sm" onClick={addList} disabled={!listInput}>{t.addBtn}</button>
               </div>
-            )}
+            </div>
           </div>
         </div>
 
@@ -810,61 +901,6 @@ export default function ConfigPage() {
           </div>
         </div>
 
-        {/* ── Catalogs ── */}
-        <div className="card">
-          <div className="card-head">
-            <div className="card-icon">📚</div>
-            <span className="card-title">{t.catalogsTitle}</span>
-          </div>
-          <div className="card-body">
-            <div className="catalog-list">
-              {config.lbUsername || config.catalogs.customLists.length > 0 ? (
-                sortedItems.map((item, index) => (
-                  <CatalogItem
-                    key={item.id}
-                    title={item.title}
-                    subtitle={item.subtitle}
-                    enabled={item.enabled}
-                    onToggle={item.onToggle}
-                    nameValue={item.nameValue}
-                    onNameChange={item.onNameChange}
-                    onDelete={item.onDelete}
-                    disabled={item.disabled}
-                    onMoveUp={index > 0 ? () => moveItem(index, 'up') : undefined}
-                    onMoveDown={index < sortedItems.length - 1 ? () => moveItem(index, 'down') : undefined}
-                    shuffled={item.shuffled}
-                    onShuffleToggle={item.onShuffleToggle}
-                  />
-                ))
-              ) : (
-                <div className="empty-state">
-                  <div className="empty-state-icon">📋</div>
-                  <p className="empty-state-text">
-                    {t.emptyCatalogs}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="divider" />
-
-            <div className="field">
-              <label className="label">{t.addCustomList}</label>
-              <div className="input-row">
-                <input
-                  className="input"
-                  type="text"
-                  placeholder={t.addListPlaceholder}
-                  value={listInput}
-                  onChange={e => setListInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && addList()}
-                />
-                <button className="btn btn-primary btn-sm" onClick={addList} disabled={!listInput}>{t.addBtn}</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* ── Global Settings ── */}
         <div className="card">
           <div className="card-head">
@@ -899,6 +935,25 @@ export default function ConfigPage() {
             <div className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', marginTop: '4px', opacity: config.hideAddonName ? 0.5 : 1, pointerEvents: config.hideAddonName ? 'none' : 'auto' }}>
               <Toggle checked={!!config.hideHyphen} onChange={v => update('hideHyphen', v)} disabled={!!config.hideAddonName} />
               <label className="label" style={{ margin: 0, cursor: 'pointer' }} onClick={() => !config.hideAddonName && update('hideHyphen', !config.hideHyphen)}>{t.hideHyphen}</label>
+            </div>
+
+            <div className="field" style={{ marginTop: '8px' }}>
+              <label className="label" htmlFor="language">{t.posterLang}</label>
+              <select
+                id="language"
+                className="select"
+                value={config.language || 'it-IT'}
+                onChange={e => update('language', e.target.value)}
+              >
+                <option value="it-IT">🇮🇹 Italiano (it-IT)</option>
+                <option value="en-US">🇺🇸 English (en-US)</option>
+                <option value="es-ES">🇪🇸 Español (es-ES)</option>
+                <option value="fr-FR">🇫🇷 Français (fr-FR)</option>
+                <option value="de-DE">🇩🇪 Deutsch (de-DE)</option>
+                <option value="pt-BR">🇧🇷 Português (pt-BR)</option>
+                <option value="ja-JP">🇯🇵 日本語 (ja-JP)</option>
+                <option value="ko-KR">🇰🇷 한국어 (ko-KR)</option>
+              </select>
             </div>
           </div>
         </div>

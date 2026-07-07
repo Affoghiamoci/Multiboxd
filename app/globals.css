@@ -182,6 +182,12 @@ input, select { font-family: inherit; }
   border: 1px solid var(--border);
 }
 
+.card-badge-experimental {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
 .card-body {
   padding: 20px;
   display: flex;

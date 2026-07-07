@@ -7,6 +7,9 @@ import { NextResponse } from 'next/server';
 import { decodeConfig, isConfigValid } from '@/lib/config';
 import { getMeta } from '@/lib/tmdb';
 
+// La TMDB API key è caricata dalle variabili d'ambiente — mai hardcoded nel codice sorgente.
+const TMDB_API_KEY = process.env.TMDB_API_KEY!;
+
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': '*',
@@ -22,7 +25,7 @@ export async function GET(
 
   if (!isConfigValid(config)) {
     return NextResponse.json(
-      { err: 'TMDB key missing. Please reconfigure the addon.' },
+      { err: 'Invalid configuration. Please reconfigure the addon.' },
       { status: 400, headers: CORS }
     );
   }
@@ -31,7 +34,7 @@ export async function GET(
     return NextResponse.json({ meta: null }, { headers: CORS });
   }
 
-  const meta = await getMeta(id, type, config.tmdbKey ?? '', config.language ?? 'it-IT', config.rpdbKey, config.rpdbStyle, config.rpdbProvider);
+  const meta = await getMeta(id, type, TMDB_API_KEY, config.language ?? 'it-IT', config.rpdbKey, config.rpdbStyle, config.rpdbProvider);
 
   if (!meta) {
     return NextResponse.json({ meta: null }, { headers: CORS });

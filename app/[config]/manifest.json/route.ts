@@ -68,7 +68,7 @@ export async function GET(
     });
   }
 
-  if (config.catalogs?.recommendations && config.tmdbKey && config.lbUsername) {
+  if (config.catalogs?.recommendations && config.lbUsername) {
     catalogs.push({ 
       type: 'movie', 
       id: 'lb-recommendations', 
@@ -115,7 +115,7 @@ export async function GET(
 
   const manifest = {
     id: 'com.multiboxd',
-    version: '0.3.1',
+    version: '0.5.0',
     name: 'Multiboxd',
     description: 'Sync your Letterboxd Watchlist, Diary, Friends Activity and custom lists directly into Stremio — no metadata provided, works alongside your existing addons.',
     logo: `${origin}/icon.png`,

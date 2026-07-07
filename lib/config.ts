@@ -20,7 +20,7 @@ export interface CatalogConfig {
 }
 
 export interface AddonConfig {
-  tmdbKey?: string;
+  // La TMDB key non è più nella config pubblica: è hardcoded server-side (process.env.TMDB_API_KEY).
   rpdbKey?: string;
   rpdbStyle?: string;
   rpdbProvider?: string;
@@ -35,12 +35,14 @@ export interface AddonConfig {
   recommendationsName?: string;
   lbSessionToken?: string;
   lbUsername?: string;
+  stremioAuthKey?: string;
+  stremioEmail?: string;
+  syncWatchlistEnabled?: boolean;
   catalogs: CatalogConfig;
   catalogOrder?: string[];
 }
 
 const DEFAULT_CONFIG: AddonConfig = {
-  tmdbKey: '',
   rpdbKey: '',
   rpdbStyle: 'poster-default',
   rpdbProvider: 'rpdb',
@@ -103,19 +105,6 @@ export function isConfigValid(config: AddonConfig): boolean {
          config.catalogs.diary || 
          config.catalogs.watched ||
          config.catalogs.customLists.length > 0;
-}
-
-/** Verifica la chiave TMDB con una chiamata leggera */
-export async function validateTmdbKey(apiKey: string): Promise<boolean> {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/configuration?api_key=${apiKey}`,
-      { next: { revalidate: 3600 } }
-    );
-    return res.ok;
-  } catch {
-    return false;
-  }
 }
 
 /** Lista lingue supportate da TMDB (le più diffuse) */

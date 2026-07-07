@@ -19,6 +19,10 @@ import {
 } from '@/lib/letterboxd';
 import { findByImdb, posterUrl, getRecommendations } from '@/lib/tmdb';
 import { trackEvent } from '@/lib/tracker';
+import { addMissingToLibrary } from '@/lib/stremio';
+
+// La TMDB API key è caricata dalle variabili d'ambiente — mai hardcoded nel codice sorgente.
+const TMDB_API_KEY = process.env.TMDB_API_KEY!;
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -63,7 +67,7 @@ export async function GET(
       films = await getDiary(config.lbUsername, config.lbSessionToken, page);
     } else if (id === 'lb-watched' && config.lbUsername) {
       films = await getWatched(config.lbUsername, config.lbSessionToken, page);
-    } else if (id === 'lb-recommendations' && config.lbUsername && config.tmdbKey) {
+    } else if (id === 'lb-recommendations' && config.lbUsername) {
       // 1. Fetch Watched (page 1)
       const watchedSeeds = await getWatched(config.lbUsername, undefined, 1);
       
@@ -75,7 +79,7 @@ export async function GET(
       await Promise.all(resolvedWatched.map(async (f) => {
         if (!f.imdbId) return;
         try {
-          const tmdbData = await findByImdb(f.imdbId, config.tmdbKey!, config.language || 'it-IT');
+          const tmdbData = await findByImdb(f.imdbId, TMDB_API_KEY, config.language || 'it-IT');
           if (tmdbData?.tmdbId) {
             seedTmdbIds.add(tmdbData.tmdbId);
           }
@@ -94,7 +98,7 @@ export async function GET(
       await Promise.all(topRated.map(async (f) => {
         if (!f.imdbId) return;
         try {
-          const tmdbData = await findByImdb(f.imdbId, config.tmdbKey!, config.language || 'it-IT');
+          const tmdbData = await findByImdb(f.imdbId, TMDB_API_KEY, config.language || 'it-IT');
           if (tmdbData?.tmdbId) {
             tmdbSources.push({ id: tmdbData.tmdbId, weight: (f as any).weight ?? 0.5 });
           }
@@ -102,7 +106,7 @@ export async function GET(
       }));
 
       // 6. Fetch weighted recommendations
-      const recs = await getRecommendations(tmdbSources, config.tmdbKey, config.language || 'it-IT');
+      const recs = await getRecommendations(tmdbSources, TMDB_API_KEY, config.language || 'it-IT');
       
       const allWatchedFilms = await getAllWatchedFilms(config.lbUsername);
       const normalizeTitle = (t: string) => t.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, ' ').trim();
@@ -172,38 +176,52 @@ export async function GET(
 
     const resolved = await resolveImdbIds(films, config.lbSessionToken);
 
-    // Se abbiamo la chiave TMDB, proviamo a scaricare i poster localizzati
+    // Proviamo a scaricare poster e titoli localizzati via TMDB (o RPDB se configurato)
     const metas = resolved.filter((f) => f.imdbId).map((f) => ({
       id: f.imdbId!,
       type: 'movie' as const,
       name: f.title,
       poster: `https://images.metahub.space/poster/medium/${f.imdbId}/img`,
       releaseInfo: f.year,
+      description: undefined as string | undefined,
+      background: undefined as string | undefined,
     }));
 
-    if (config.tmdbKey || config.rpdbKey) {
-      await Promise.all(metas.map(async (m) => {
-        try {
-          if (config.rpdbKey) {
-            const style = config.rpdbStyle || 'poster-default';
-            const domain = config.rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
-            m.poster = `${domain}/${config.rpdbKey}/imdb/${style}/${m.id}.jpg`;
-          }
-
-          if (config.tmdbKey) {
-            const tmdbData = await findByImdb(m.id, config.tmdbKey, config.language || 'it-IT');
-            if (!config.rpdbKey && tmdbData?.posterPath) {
-              const url = posterUrl(tmdbData.posterPath, 'w500');
-              if (url) m.poster = url;
-            }
-            if (tmdbData?.title) {
-              m.name = tmdbData.title;
-            }
-          }
-        } catch {
-          // Ignora errori e usa Metahub fallback
+    await Promise.all(metas.map(async (m) => {
+      try {
+        if (config.rpdbKey) {
+          const style = config.rpdbStyle || 'poster-default';
+          const domain = config.rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
+          m.poster = `${domain}/${config.rpdbKey}/imdb/${style}/${m.id}.jpg`;
         }
-      }));
+
+        const tmdbData = await findByImdb(m.id, TMDB_API_KEY, config.language || 'it-IT');
+        if (!config.rpdbKey && tmdbData?.posterPath) {
+          const url = posterUrl(tmdbData.posterPath, 'w500');
+          if (url) m.poster = url;
+        }
+        if (tmdbData?.title) {
+          m.name = tmdbData.title;
+        }
+        if (tmdbData?.description) {
+          m.description = tmdbData.description;
+        }
+        if (tmdbData?.backgroundPath) {
+          m.background = posterUrl(tmdbData.backgroundPath, 'w1280');
+        }
+      } catch {
+        // Ignora errori e usa Metahub fallback
+      }
+    }));
+
+    // Sync Watchlist -> Libreria Stremio: solo aggiunta, mai rimozione. Fire-and-forget,
+    // non deve mai rallentare o rompere la risposta del catalogo verso Stremio.
+    // Usiamo i metas già localizzati (titolo/poster) così i titoli aggiunti in libreria
+    // rispecchiano la lingua configurata, non il titolo grezzo scrapato da Letterboxd.
+    if (id === 'lb-watchlist' && config.syncWatchlistEnabled && config.stremioAuthKey) {
+      addMissingToLibrary(config.stremioAuthKey, metas).catch((err) => {
+        console.error('[sync] error:', err);
+      });
     }
 
     const maxAge = id === 'lb-watchlist' ? 3600 : 43200;
