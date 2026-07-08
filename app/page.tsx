@@ -886,18 +886,20 @@ export default function ConfigPage() {
               </p>
             </div>
 
-            <div className="field">
-              <label className="label" htmlFor="rpdb-style">{t.rpdbStyleLabel}</label>
-              <select
-                id="rpdb-style"
-                className="select"
-                value={config.rpdbStyle || 'poster-default'}
-                onChange={e => update('rpdbStyle', e.target.value)}
-              >
-                <option value="poster-default">{t.rpdbStyleDefault}</option>
-                <option value="poster-textless">{t.rpdbStyleTextless}</option>
-              </select>
-            </div>
+            {config.rpdbKey && (
+              <div className="field">
+                <label className="label" htmlFor="rpdb-style">{t.rpdbStyleLabel}</label>
+                <select
+                  id="rpdb-style"
+                  className="select"
+                  value={config.rpdbStyle || 'poster-default'}
+                  onChange={e => update('rpdbStyle', e.target.value)}
+                >
+                  <option value="poster-default">{t.rpdbStyleDefault}</option>
+                  <option value="poster-textless">{t.rpdbStyleTextless}</option>
+                </select>
+              </div>
+            )}
           </div>
         </div>
 
