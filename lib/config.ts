@@ -20,6 +20,7 @@ export interface CatalogConfig {
 }
 
 export interface AddonConfig {
+  cid?: string;           // codice di installazione anonimo (solo per le statistiche)
   // La TMDB key non è più nella config pubblica: è hardcoded server-side (process.env.TMDB_API_KEY).
   rpdbKey?: string;
   rpdbStyle?: string;
