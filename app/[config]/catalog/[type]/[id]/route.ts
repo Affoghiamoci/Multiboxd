@@ -53,8 +53,8 @@ export async function GET(
     return NextResponse.json({ metas: [] }, { headers: CORS });
   }
 
-  // Track this catalog request (fire-and-forget)
-  trackEvent('multiboxd', 'catalog_request', configStr);
+  // Conta solo la prima pagina di ogni catalogo (le pagine successive sono lo stesso utilizzo)
+  if (!(skip > 0)) trackEvent('multiboxd', 'catalog_request', configStr, config.lbUsername);
 
   let films: LbFilm[] = [];
 

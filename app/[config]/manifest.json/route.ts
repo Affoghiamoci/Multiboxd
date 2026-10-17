@@ -15,7 +15,7 @@ export async function GET(
   const config = decodeConfig(configStr);
 
   // Track manifest request (fire-and-forget)
-  trackEvent('multiboxd', 'manifest_request', configStr);
+  trackEvent('multiboxd', 'manifest_request', configStr, config.lbUsername);
 
   const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'multiboxd.fly.dev';
   const protocol = req.headers.get('x-forwarded-proto') || (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https');
