@@ -54,7 +54,7 @@ export async function GET(
   }
 
   // Conta solo la prima pagina di ogni catalogo (le pagine successive sono lo stesso utilizzo)
-  if (!(skip > 0)) trackEvent('multiboxd', 'catalog_request', configStr, config.lbUsername);
+  if (!(skip > 0)) trackEvent('multiboxd', 'catalog_request', configStr, config.lbUsername, config.cid);
 
   let films: LbFilm[] = [];
 

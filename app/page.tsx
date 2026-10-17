@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { encodeConfig, decodeConfig, AddonConfig } from '@/lib/config';
+import { ensureInstallId } from '@/lib/installId';
 
 
 const TRANSLATIONS = {
@@ -55,7 +56,7 @@ const TRANSLATIONS = {
     faq7q: 'How often do the catalogs update?',
     faq7a: 'Your Watchlist updates approximately every hour. The Diary, Watched, Recommended films, Custom Lists, and Friends Activity catalogs update approximately every 12 hours.',
     faq8q: 'What data does this addon collect?',
-    faq8a: 'This addon collects anonymous usage statistics (number of requests, addon name, timestamp) to monitor the service. No IP addresses, names, or personally identifiable data are stored.',
+    faq8a: 'This addon collects anonymous usage statistics (number of requests, addon name, timestamp) to monitor the service, plus an anonymous code (derived from your Letterboxd username, or a random installation code, and saved in an encrypted form) used only to count users. No IP addresses, names, or personally identifiable data are stored.',
     support: 'Support me on Ko-fi',
     footer: 'Developed with ♥ for the Stremio community',
     connectedAs: 'Connected as',
@@ -130,7 +131,7 @@ const TRANSLATIONS = {
     faq7q: 'Ogni quanto si aggiornano i cataloghi?',
     faq7a: 'La tua Watchlist si aggiorna circa ogni ora. Il Diary, i film Visti (Watched), i Consigliati, le Liste Personalizzate e il catalogo dell\'Attività degli Amici si aggiornano circa ogni 12 ore.',
     faq8q: 'Quali dati raccoglie questo addon?',
-    faq8a: 'Questo addon raccoglie statistiche di utilizzo anonime (numero di richieste, addon usato, timestamp) per monitorare il funzionamento del servizio. Non vengono salvati IP, nomi o dati personali identificabili.',
+    faq8a: 'Questo addon raccoglie statistiche di utilizzo anonime (numero di richieste, addon usato, timestamp) per monitorare il funzionamento del servizio, più un codice anonimo (ricavato dal tuo nome utente Letterboxd, oppure un codice di installazione casuale, e salvato in forma cifrata) usato solo per contare gli utenti. Non vengono salvati IP, nomi o dati personali identificabili.',
     support: 'Supportami su Ko-fi',
     footer: 'Sviluppato con ♥ per la community di Stremio',
     connectedAs: 'Connesso come',
@@ -349,6 +350,11 @@ export default function ConfigPage() {
         }
       }
     }
+  }, []);
+
+  // ── Codice di installazione anonimo: resta lo stesso anche se cambi le impostazioni ──
+  useEffect(() => {
+    setConfig(prev => (prev.cid ? prev : { ...prev, cid: ensureInstallId() }));
   }, []);
 
   // ── Legacy host detection ──
