@@ -8,16 +8,16 @@ import { NextResponse } from 'next/server';
 import { decodeConfig, isConfigValid } from '@/lib/config';
 import {
   getFriendsActivity,
-  getWatchlist,
   getDiary,
   getWatched,
-  getPublicList,
   getAllWatchedFilms,
   getAllPublicListFilms,
   resolveImdbIds,
   LbFilm,
 } from '@/lib/letterboxd';
 import { findByImdb, posterUrl, getRecommendations } from '@/lib/tmdb';
+import { getWatchlistCatalog } from '@/lib/watchlist';
+import { catalogPosterUrl, posterOrigin } from '@/lib/posters';
 import { trackEvent } from '@/lib/tracker';
 import { addMissingToLibrary } from '@/lib/stremio';
 
@@ -44,7 +44,11 @@ export async function GET(
   const { config: configStr, id: rawId } = await params;
   const id = rawId.replace(/\.json$/, '');
   const url = new URL(req.url);
-  const skip = parseInt(url.searchParams.get('skip') ?? '0', 10);
+  const rawSkip = url.searchParams.get('skip') ?? '0';
+  const skip = Number(rawSkip);
+  if (!/^\d+$/.test(rawSkip) || !Number.isSafeInteger(skip) || skip > Number.MAX_SAFE_INTEGER - 100) {
+    return NextResponse.json({ error: 'Invalid skip' }, { status: 400, headers: CORS });
+  }
   const page = skipToPage(skip);
 
   const config = decodeConfig(configStr);
@@ -62,7 +66,7 @@ export async function GET(
     if (id === 'lb-friends' && config.lbUsername) {
       films = await getFriendsActivity(config.lbSessionToken, page, config.lbUsername);
     } else if (id === 'lb-watchlist' && config.lbUsername) {
-      films = await getWatchlist(config.lbUsername, config.lbSessionToken, page);
+      films = await getWatchlistCatalog(config.lbUsername, skip);
     } else if (id === 'lb-diary' && config.lbUsername) {
       films = await getDiary(config.lbUsername, config.lbSessionToken, page);
     } else if (id === 'lb-watched' && config.lbUsername) {
@@ -174,7 +178,7 @@ export async function GET(
       films = allFilms.slice(skip, skip + 100);
     }
 
-    const resolved = await resolveImdbIds(films, config.lbSessionToken);
+    const resolved = id === 'lb-watchlist' ? films : await resolveImdbIds(films, config.lbSessionToken);
 
     // Proviamo a scaricare poster e titoli localizzati via TMDB (o RPDB se configurato)
     const metas = resolved.filter((f) => f.imdbId).map((f) => ({
@@ -189,17 +193,8 @@ export async function GET(
 
     await Promise.all(metas.map(async (m) => {
       try {
-        if (config.rpdbKey) {
-          const style = config.rpdbStyle || 'poster-default';
-          const domain = config.rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
-          m.poster = `${domain}/${config.rpdbKey}/imdb/${style}/${m.id}.jpg`;
-        }
-
         const tmdbData = await findByImdb(m.id, TMDB_API_KEY, config.language || 'it-IT');
-        if (!config.rpdbKey && tmdbData?.posterPath) {
-          const url = posterUrl(tmdbData.posterPath, 'w500');
-          if (url) m.poster = url;
-        }
+        m.poster = catalogPosterUrl(m.id, tmdbData?.posterPath, config, posterOrigin(req));
         if (tmdbData?.title) {
           m.name = tmdbData.title;
         }
@@ -238,6 +233,6 @@ export async function GET(
     );
   } catch (err) {
     console.error('[catalog] error:', err);
-    return NextResponse.json({ metas: [] }, { headers: CORS });
+    return NextResponse.json({ metas: [] }, { status: 502, headers: { ...CORS, 'Cache-Control': 'no-store' } });
   }
 }

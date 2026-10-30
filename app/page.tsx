@@ -392,7 +392,7 @@ export default function ConfigPage() {
     setRpdbValidating(true);
     setRpdbStatus('idle');
     
-    const domain = config.rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
+    const domain = config.rpdbProvider === 'opdb' ? 'https://openposterdb.com' : 'https://api.ratingposterdb.com';
     const testUrl = `${domain}/${config.rpdbKey}/imdb/poster-default/tt0111161.jpg`;
 
     const img = new Image();

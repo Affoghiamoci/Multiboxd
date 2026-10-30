@@ -5,6 +5,7 @@
  */
 
 import NodeCache from 'node-cache';
+import { ratedPosterUrl } from './posters';
 
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 }); // 1h TTL
 
@@ -132,13 +133,14 @@ export async function findByImdb(
   apiKey: string,
   language: string
 ): Promise<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string; description?: string; backgroundPath?: string } | null> {
+  if (!apiKey) return null;
   const cacheKey = `find:${imdbId}:${language}`;
   const cached = cache.get<{ tmdbId: number; type: 'movie' | 'series'; posterPath?: string; title?: string; description?: string; backgroundPath?: string }>(cacheKey);
   if (cached) return cached;
 
   const url = `${TMDB_BASE}/find/${imdbId}?api_key=${apiKey}&language=${language}&external_source=imdb_id`;
   try {
-    const res = await fetch(url, { next: { revalidate: 86400 } });
+    const res = await fetch(url, { next: { revalidate: 86400 }, signal: AbortSignal.timeout(5000) });
     if (!res.ok) return null;
     const data = await res.json();
 
@@ -300,9 +302,7 @@ export async function getMeta(
   }
 
   if (meta && rpdbKey) {
-    const style = rpdbStyle || 'poster-default';
-    const domain = rpdbProvider === 'opdb' ? 'https://openposterdb.com/api' : 'https://api.ratingposterdb.com';
-    meta.poster = `${domain}/${rpdbKey}/imdb/${style}/${imdbId}.jpg`;
+    meta.poster = ratedPosterUrl(imdbId, { rpdbKey, rpdbStyle, rpdbProvider });
   }
   return meta;
 }

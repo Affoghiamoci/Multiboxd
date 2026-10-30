@@ -67,6 +67,7 @@ function httpRequest(
     });
 
     req.on('error', reject);
+    req.setTimeout(10000, () => req.destroy(new Error('Letterboxd request timed out')));
     if (opts.body) req.write(opts.body);
     req.end();
   });
@@ -138,16 +139,20 @@ export async function verifySessionCookie(cookieValue: string): Promise<LbAuthRe
 
 function extractFilmsFromGrid($: cheerio.CheerioAPI): LbFilm[] {
   const films: LbFilm[] = [];
+  const seen = new Set<string>();
   $('li.poster-container, div.film-poster, ul.poster-list li, .react-component[data-component-class="LazyPoster"]').each((_, el) => {
     const item = $(el);
     const slug =
       item.find('[data-film-slug]').attr('data-film-slug') ??
       item.attr('data-film-slug') ??
-      item.attr('data-item-slug');
+      item.attr('data-item-slug') ??
+      item.find('[data-item-slug]').attr('data-item-slug');
     const title =
       item.find('img').attr('alt') ??
       item.find('[data-film-name]').attr('data-film-name') ??
+      item.attr('data-film-name') ??
       item.attr('data-item-name') ??
+      item.find('[data-item-name]').attr('data-item-name') ??
       '';
     const poster = 
       item.find('img[src]').attr('src') ??
@@ -161,7 +166,10 @@ function extractFilmsFromGrid($: cheerio.CheerioAPI): LbFilm[] {
       if (match) rating = parseInt(match[1], 10);
     }
 
-    if (slug) films.push({ letterboxdSlug: slug, title, year, poster, rating });
+    if (slug && !seen.has(slug)) {
+      seen.add(slug);
+      films.push({ letterboxdSlug: slug, title, year, poster, rating });
+    }
   });
   return films;
 }
@@ -229,9 +237,11 @@ export async function getWatchlist(username: string, _sessionToken?: string, pag
   const cached = cache.get<LbFilm[]>(cacheKey);
   if (cached) return cached;
   const urlPath = page === 1 ? `/${username}/watchlist/` : `/${username}/watchlist/page/${page}/`;
-  const html = await lbGet(urlPath);
-  if (!html) return [];
-  const films = extractFilmsFromGrid(cheerio.load(html));
+  // Una pagina bloccata non indica la fine della watchlist: non metterla in cache.
+  const res = await httpRequest(`${LB_BASE}${urlPath}`);
+  if (res.status === 404 && page > 1) return [];
+  if (res.status !== 200) throw new Error(`Letterboxd watchlist returned ${res.status}`);
+  const films = extractFilmsFromGrid(cheerio.load(res.body));
   cache.set(cacheKey, films);
   return films;
 }
